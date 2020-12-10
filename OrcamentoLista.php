@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/Sao_Paulo');
+date_default_timezone_set('America/Sao_Paulo'); 
 session_start();
 
 if ( isset( $_COOKIE[ 'login' ] ) ) {
