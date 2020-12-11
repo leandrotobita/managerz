@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/Sao_Paulo'); 
+date_default_timezone_set('America/Sao_Paulo');
 session_start();
 
 if ( isset( $_COOKIE[ 'login' ] ) ) {
@@ -42,718 +42,63 @@ if ( isset( $login_cookie ) ) {
 
 
 
-
-
-
-
-<?php // ADICONO UM ORÇAMENTO
-
-
-			if ( isset( $_POST[ "orcamento_form" ] ) ) {
-
-				$SQL_add_tarfa = "INSERT  INTO orcamento
-
-(
-OrcSoli,
-OrcData,
-OrcQuemCriou,
-OrcAprovadoReprovado
-
-)
-VALUES
-(
-'" . $_POST[ 'solicitacao_id' ] . "',
-NOW(),
-'" . $login_cookie . "',
-'PENDENTE DE APROVAÇÃO'
-)";
-
-
-
-				mysqli_query( $connect, $SQL_add_tarfa );
-				 $last_id = mysqli_insert_id($connect);
-				 
-
-				$SQL_add_historico = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	(SELECT max(OrcId) as OrcId FROM gz_cmms.orcamento),
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	CONCAT('Orcamento n°', (SELECT max(OrcId) as OrcId FROM gz_cmms.orcamento), 'criado.'),
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-				mysqli_query( $connect, $SQL_add_historico );
-
-				?>
-				<script>
-					window.location = "Orcamento.php?sol=<?php echo  $_POST['solicitacao_id']; ?>&orc=<?php echo $last_id;?>"
-				</script>
-				<?php
-
-			}
-			?>
-
-
-
-
-
-
-
-
-
-
-
-<?php
-			// 01 LISTO TODOS OS PRODUTOS
-
-			$MaterialSQL = "
-	SELECT 
-MatId, estoque(MatId) as qtde,
  
-MatFornecedor,
-MatCategoria,
-MatDescricao,
-MatApelido,
-MatCusto,
-MatDataCadastro,
-MatUltimaCompra,
-MatUnidade,
-MatGrade,
-MatAtivado,
-gz_material_categoria.CatID as CatId,
-gz_material_categoria.CatNome as CatNome,
-gz_material_fornecedor.CatID as ForId,
-gz_material_fornecedor.CatNome as ForNome FROM  gz_material
-
-LEFT JOIN gz_material_fornecedor on gz_material_fornecedor.CatID = gz_material.MatFornecedor
-LEFT JOIN gz_material_categoria on gz_material_categoria.CatID = gz_material.MatCategoria order by MatId asc
-
-	";
-
-	
-	$MaterialRES = mysqli_query( $connect, $MaterialSQL );
-			 if ( mysqli_num_rows( $MaterialRES ) > 0 ) {
-             while ( $MaterialROW = mysqli_fetch_array( $MaterialRES ) ) {
-			 
-			 	$MatId[]			= $MaterialROW["MatId"];
-				 
-				$MatFornecedor[]	= $MaterialROW["MatFornecedor"];
-				$MatCategoria[]		= $MaterialROW["MatCategoria"];
-				$MatDescricao[]		= $MaterialROW["MatDescricao"];
-				$MatApelido[]		= $MaterialROW["MatApelido"];
-				$MatCusto[]			= $MaterialROW["MatCusto"];
-				$MatDataCadastro[]	= $MaterialROW["MatDataCadastro"];
-				$MatUltimaCompra[]	= $MaterialROW["MatUltimaCompra"];
-				$MatUnidade[]		= $MaterialROW["MatUnidade"];
-				$MatGrade[]			= $MaterialROW["MatGrade"];
-				$MatAtivado[]		= $MaterialROW["MatAtivado"];
-				$MatCatId[]    = $MaterialROW["CatId"];
-				$MatCatNome[]    = $MaterialROW["CatNome"];
-				$MatForId[]    = $MaterialROW["ForId"];
-				 $MatForNome[]    = $MaterialROW["ForNome"];
-				 $MatQTDE[]     = $MaterialROW["qtde"];
-
-			 }}
-			?>
-
-
-
-	<?php // foto upload
-
-	if ( isset( $_POST[ "action" ] ) && $_POST[ "action" ] == "submit" ) {
-		?>
-
- 
-		<?php // grava foto  
-
-
-		$foto = $_FILES[ 'foto' ][ 'name' ];
-
-		if ( $foto != "" ) {
-			$source = $_FILES[ 'foto' ][ 'tmp_name' ];
-			$target = "cmms_manager_fotosX/" . $foto;
-			move_uploaded_file( $source, $target );
-			$imagepath = $foto;
-			$save = "cmms_manager_fotosX/" . $imagepath; //This is the new file you saving
-			$file = "cmms_manager_fotosX/" . $imagepath; //This is the original file
-
-
-
-		}
-
-
-		$SQL_EnviaFoto = "insert into gz_fotos
-
-																										(
-																										fotodescricao,
-																										fotosolicitacao,
-																										fotodata,
-																										fotologin
-																										)
-																										values
-																										(
-																										'" . $foto . "',
-																										'" . $_POST[ 'solicitacao_id' ] . "',
-																										NOW(),
-																										'" . $login_cookie . "'
-																										
-																										)
-																										";
-		mysqli_query( $connect, $SQL_EnviaFoto );
-
-
-$SQL_adicionafoto_historico = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	'',
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	'<b>Adicionado à galeria: </b> ".$foto." ',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-			mysqli_query( $connect, $SQL_adicionafoto_historico );
-
-		?>
-
-
-
-
-		<script>
-			window.location = "SolicitacaoDetalhe.php?sol=<?php echo  $_POST['solicitacao_id']; ?>"
-		</script>
-		<?php	}  ?>
-
-
-
-
-
-
-<?php // UTILIZAR UM MATERIAL
-
-
-		if ( isset( $_POST[ "utilizarmaterial" ] ) ) {
-			
-			// saida no estoque
-			$SQL_entradamaterial = "
-				INSERT INTO gz_material_estoque
-
-				(
-				MatEstoqueMaterial,
-				MatEstoqueGrade,
-				MatEstoqueEntradaSaida,
-				MatData,
-				MatQuemInteragiu,
-				MatQTDE,
-				MatNF,
-				MatControle,
-				MatSolicitacao
-				)
-				VALUES
-				(
-				'".$_POST['produto_selecionado']."',
-				'U',
-				'S',
-				NOW(),
-				'".$login_cookie."',
-				'-".$_POST['QTDE']."',
-				'',
-				'',
-				'".$_POST['solicitacao_id']."'
-				)
-				";
-				mysqli_query( $connect, $SQL_entradamaterial ) ;
-			?>
-
-			 
-			 
 			 
 
 
-			<?php
 
 
-
-
-			$SQL_add_historico_addmat = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	'',
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	'<b>Saída de</b> ".$_POST['produto_selecionado']." <b>Qtde</b>: ".$_POST['QTDE']."',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-			mysqli_query( $connect, $SQL_add_historico_addmat );
-
-			?>
-
-
-			<script>
-				window.location.href = "SolicitacaoDetalhe.php?&sol=<?php echo $_POST['solicitacao_id']; ?>"
-			</script>
-
-
-			<?php } ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		<?php // finaliza solicitação 
-
-
-		if ( isset( $_POST[ "soli_finalizar" ] ) ) {
-			?>
-
-			<?php
-
-			$SQL_FINALIZA_SOLICITACAO = "UPDATE gz_solicitacoes SET Status = '3' WHERE SoliId = '" . $_POST[ 'solicitacao_id' ] . "'";
-			mysqli_query( $connect, $SQL_FINALIZA_SOLICITACAO );
-
-			?>
-			<audio id="myAudio">
-				<source src="alert.ogg" type="audio/ogg">
-				<source src="alert.mp3" type="audio/mpeg"> Your browser does not support the audio element.
-			</audio>
-
-
-			<?php
-
-
-
-
-			$SQL_add_historico2 = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	'',
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	'Solicitação finalizada',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-			mysqli_query( $connect, $SQL_add_historico2 );
-
-			?>
-
-
-			<script>
-				window.location.href = "SolicitacaoDetalhe.php?&sol=<?php echo $_POST['solicitacao_id']; ?>"
-			</script>
-
-
-			<?php } ?>
-
-
-
-			<?php // marca tarefa como 02-feito
-
-			$APROVA_REPROVA = $_GET[ "z" ];
-
-			if ( $APROVA_REPROVA != '' ) {
-
-				$APROVA_REPROVASQL = "
-			
-			UPDATE gz_tarefas SET TarefaOrcamentoAprovarReprovar = '".$_GET['z']."' WHERE TarefaId = '" . $_GET['i'] . "'
-			
-			";
-
-				mysqli_query( $connect, $APROVA_REPROVASQL );
-
-
-
-
-
-				// grava no hostiro a alteraçao
-				$SQL_add_historico00 = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	'" . $_GET[ "i" ] . "',
-	'" . $_GET[ "sol" ] . "',
-	'" . 'o orçamento <b>' . $_GET[ "f" ] . '</b> foi '.  $_GET[ "z" ] . "',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-				mysqli_query( $connect, $SQL_add_historico00 );
-
-				?>
-
-
-
-
-				<script>
-					window.location.href = "SolicitacaoDetalhe.php?&sol=<?php echo $_GET["sol"]; ?>#todo"
-				</script>
-				<?php
-			}
-
-			?>
-
-			<?php // add especialista
-
-
-			if ( isset( $_POST[ "especialista_form" ] ) ) {
-
-				$SQL_add_tarfa = "INSERT  INTO gz_tarefas
-
-(
-TarefaDataCadastro,
-TarefaSolicitacao,
-TarefaTitulo,
-TarefaStatus,
-TarefaCriou
-)
-VALUES
-(
-NOW(),
-'" . $_POST[ 'solicitacao_id' ] . "',
-'" . $_POST[ 'ESPECIALISTA' ] . "',
-'01 - criado',
-'" . $login_cookie . "'
-)";
-
-
-
-				mysqli_query( $connect, $SQL_add_tarfa );
-
-
-				$SQL_add_historico = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	(SELECT max(TarefaId) as TarefaId FROM gz_cmms.gz_tarefas),
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	'" . 'UM ESPECIALISTA PRECISA SER CHAMADO: <b>' . $_POST[ 'ESPECIALISTA' ] . '</b> .' . "',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-				mysqli_query( $connect, $SQL_add_historico );
-
-				?>
-				<script>
-					window.location = "SolicitacaoDetalhe.php?sol=<?php echo  $_POST['solicitacao_id']; ?>"
-				</script>
-				<?php
-
-			}
-			?>
-
-
-
-
-
-			<?php // Adicionando uma tarefa em uma solicitação.  
-
-
-			if ( isset( $_POST[ "adicionartarefa" ] ) ) {
-
-				// atualiza o status da solicitação ini
-				$SQL_AlteraSTATUS_SOLICITACAO = "UPDATE gz_solicitacoes SET Status = '2' WHERE SoliId = '" . $_POST[ 'solicitacao_id' ] . "'";
-				mysqli_query( $connect, $SQL_AlteraSTATUS_SOLICITACAO );
-
-				// atualiza o status da solicitacao 
-
-
-				$SQL_add_tarfa = "INSERT  INTO gz_tarefas
-
-(
-TarefaDataCadastro,
-TarefaSolicitacao,
-TarefaTitulo,
-TarefaStatus,
-TarefaCriou
-)
-VALUES
-(
-NOW(),
-'" . $_POST[ 'solicitacao_id' ] . "',
-'" . $_POST[ 'TAREFA' ] . "',
-'01 - criado',
-'" . $login_cookie . "'
-)";
-
-
-
-
-
-				mysqli_query( $connect, $SQL_add_tarfa );
-
-
-				$SQL_add_historico = "
-	
-	INSERT INTO gz_historico
-	(
-	historico_tarefa,
-	historico_solicitacao,
-	historico_descricao,
-	historico_datainserida,
-	historico_login
-	)
-	VALUES
-
-(
-	(SELECT max(TarefaId) as TarefaId FROM gz_cmms.gz_tarefas),
-	'" . $_POST[ 'solicitacao_id' ] . "',
-	'" . 'a tarefa <b>' . $_POST[ 'TAREFA' ] . '</b> foi criada.' . "',
-	NOW(),
-'" . $login_cookie . "'
-)
-	
-	
-	";
-
-				mysqli_query( $connect, $SQL_add_historico );
-
-				?>
-				<script>
-					window.location = "SolicitacaoDetalhe.php?sol=<?php echo  $_POST['solicitacao_id']; ?>"
-				</script>
-				<?php
-
-			}
-
-
-
-			?>
+			 
 			<?php
 			//todas as solicitações
 
 			$SolicitacoesSQL = "
 	SELECT 
-SoliId,
-SoliNome,
-SoliTelefone,
-SoliEmpresa,
-gz_empresas.FANTASIA as SoliDescempresa,
-SoliCargo,
-SoliEmail,
-Solicidade,
-SoliEstado,
-OSDescricao,
-OSCategoria,
-solicategoria.SoliCatDescricao as Categoria,
-OSTipo,
-OSLocal,
-OSVencimento,
-OSObs,
-OSPrioridade,
-DATE_FORMAT(DataCadastro,'%d/%m/%Y') as DATACADASTRO,
-TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
-UsuarioLogado,
-IpUsuario,
-`Status`  ,
-AprovadoReprovado
- FROM gz_solicitacoes
-
-LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
-
-WHERE SoliId = '" . $_GET[ 'sol' ] . "'
-	";
-
-			?>
-			<?php
-			//todas TAREFAS do banco
-
-			$ListaTarefasSQL = "
-	SELECT TarefaId, TarefaDataCadastro, TarefaSolicitacao, TarefaTitulo, TarefaStatus, TarefaCriou, TarefaOrcamento, TarefaOrcamentoValor, TarefaOrcamentoAprovarReprovar  FROM gz_tarefas WHERE TarefaSolicitacao = '" . $_GET[ 'sol' ] . "' ORDER BY TarefaId DESC
+OrcId,
+OrcSoli,
+OrcData,
+OrcQuemCriou,
+OrcAprovadoReprovado,
+OrcTitulo,
+SoliId, OSDescricao
  
-	";
 
-			$ListaTarefasRES = mysqli_query( $connect, $ListaTarefasSQL );
-			 
+from orcamento
 
-			if ( mysqli_num_rows( $ListaTarefasRES ) > 0 ) {
+LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli
 
-
-				while ( $ListaTarefasROW = mysqli_fetch_array( $ListaTarefasRES ) ) {
-
-
-
-
-
-
-					$TarefaId[] = $ListaTarefasROW[ "TarefaId" ];
-					$TarefaDataCadastro[] = $ListaTarefasROW[ "TarefaDataCadastro" ];
-					$TarefaSolicitacao[] = $ListaTarefasROW[ "TarefaSolicitacao" ];
-					$TarefaTitulo[] = $ListaTarefasROW[ "TarefaTitulo" ];
-					$TarefaStatus[] = $ListaTarefasROW[ "TarefaStatus" ];
-					$TarefaCriou[] = $ListaTarefasROW[ "TarefaCriou" ];
-					$AprovadoReprovado[] = $ListaTarefasROW[ "AprovadoReprovado" ];
-					$TarefaOrcamento[]  = $ListaTarefasROW[ "TarefaOrcamento" ];
-					$TarefaOrcamentoValor[]  = $ListaTarefasROW[ "TarefaOrcamentoValor" ];
-					$TarefaOrcamentoAprovarReprovar[]  = $ListaTarefasROW[ "TarefaOrcamentoAprovarReprovar" ];
-					
-					
-					
-					
-					
-
-
-				}
-
-			}
-
-			?>
-
-			<?php // LISTA histórico da solicitacao
-
-			$ListaHistoricoSQL = "
-	select historicoId, historico_tarefa, historico_solicitacao, historico_descricao, historico_datainserida, historico_login from gz_historico WHERE historico_solicitacao = '" . $_GET[ 'sol' ] . "' ORDER BY historicoId DESC
  
+WHERE OrcSoli = '".$_GET[ 'sol' ]."'
 	";
 
-			$ListaHistoricoREST = mysqli_query( $connect, $ListaHistoricoSQL );
-			 
-
-			if ( mysqli_num_rows( $ListaHistoricoREST ) > 0 ) {
-
-
-				while ( $ListaHistoricoROW = mysqli_fetch_array( $ListaHistoricoREST ) ) {
-
-
-
-
-
-
-					$historicoId[] = $ListaHistoricoROW[ "historicoId" ];
-					$historico_tarefa[] = $ListaHistoricoROW[ "historico_tarefa" ];
-					$historico_solicitacao[] = $ListaHistoricoROW[ "historico_solicitacao" ];
-					$historico_descricao[] = $ListaHistoricoROW[ "historico_descricao" ];
-					$historico_datainserida[] = $ListaHistoricoROW[ "historico_datainserida" ];
-					$historico_login[] = $ListaHistoricoROW[ "historico_login" ];
-
-
-				}
-
-			}
-
 			?>
 
-			<?php // listo as fotos cara!! 
-
-			$FotosSQL = "SELECT fotoid, fotodescricao, REPLACE(right(fotodescricao,4),'.','') as fotoext, fotosolicitacao, fotodata, fotologin FROM gz_fotos   WHERE fotosolicitacao = '" . $_GET[ 'sol' ] . "'";
-			$FotosRES = mysqli_query( $connect, $FotosSQL );
-			 
-
-			if ( mysqli_num_rows( $FotosRES ) > 0 ) {
 
 
-				while ( $FotoROW = mysqli_fetch_array( $FotosRES ) ) {
+<?php
+			//todas as solicitações
 
+			$SolicitacoesSQL2 = "
+	SELECT 
+OrcId,
+OrcSoli,
+OrcData,
+OrcQuemCriou,
+OrcAprovadoReprovado,
+OrcTitulo,
+SoliId, OSDescricao
+ 
 
-					$fotoid[] = $FotoROW[ "fotoid" ];
-					$fotodescricao[] = $FotoROW[ "fotodescricao" ];
-					$fotosolicitacao[] = $FotoROW[ "fotosolicitacao" ];
-					$fotodata[] = $FotoROW[ "fotodata" ];
-					$fotologin[] = $FotoROW[ "fotologin" ];
-					$fotoext[] = $FotoROW[ "fotoext" ];
+from orcamento
 
+LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli
 
-				}
-			}
-
-
-
-
+ 
+WHERE OrcSoli = '".$_GET[ 'sol' ]."' limit 1
+	";
 
 			?>
+		
 			<!doctype html>
 			<html lang="en">
 
@@ -825,42 +170,7 @@ WHERE SoliId = '" . $_GET[ 'sol' ] . "'
 <?php include "z_menu.php";?>
 						</div>
 						<div class="app-main__outer">
-							<?php 
-					 
-					 	
-$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL );
-		 
-	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {
-		while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
-
-
-$SoliStatuss   = $SolicitacoesROW["Status"];
-
-$SoliId        = $SolicitacoesROW["SoliId"];	
-$SoliNome      = $SolicitacoesROW["SoliNome"];      
-$SoliTelefone  = $SolicitacoesROW["SoliTelefone"];
-$SoliEmpresa   = $SolicitacoesROW["SoliEmpresa"];
-$SoliCargo     = $SolicitacoesROW["SoliCargo"];
-$SoliEmail     = $SolicitacoesROW["SoliEmail"];
-$Solicidade    = $SolicitacoesROW["Solicidade"];
-$SoliEstado    = $SolicitacoesROW["SoliEstado"];
-$OSDescricao   = $SolicitacoesROW["OSDescricao"];
-$OSCategoria   = $SolicitacoesROW["OSCategoria"];
-$Categoria     = $SolicitacoesROW["Categoria"];
-$OSTipo        = $SolicitacoesROW["OSTipo"];
-$OSLocal       = $SolicitacoesROW["OSLocal"];
-$OSVencimento  = $SolicitacoesROW["OSVencimento"];
-$OSObs         = $SolicitacoesROW["OSObs"];
-$OSPrioridade  = $SolicitacoesROW["OSPrioridade"];
-$DataCadastro  = $SolicitacoesROW["DATACADASTRO"];
-$HoraCadastro  = $SolicitacoesROW["HORACADASATRO"];
-$UsuarioLogado = $SolicitacoesROW["UsuarioLogado"];
-$IpUsuario     = $SolicitacoesROW["IpUsuario"];
-$SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];			
-			$AprovadoReprovado2 = $SolicitacoesROW["AprovadoReprovado"];	
-
-					 
-					 ?>
+							
 
 
 							<div class="app-main__inner">
@@ -875,141 +185,38 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 											<div class="page-title-icon">
 												<i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
 											</div>
-											<div>Solicitação #
-												<?php echo sprintf('%04d', $SoliId);?><br>
-												Orçamento #<?php echo sprintf('%04d', $_GET['orc']);?><br>
+											<div>Solicitação <a href="SolicitacaoDetalhe.php?sol=<?php echo $_GET['sol']; ?>">#<?php echo sprintf('%04d', $_GET["sol"]);?></a><br>
+												Orçamentos para:<br>
+												
+								 <?php 
+					 
+					 	
+$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL2 );
+		 
+	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {
+		while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
+
+
+$OrcId    				= $SolicitacoesROW["OrcId"];
+$OrcSoli				= $SolicitacoesROW["OrcSoli"];
+$OrcData		        = $SolicitacoesROW["OrcData"];
+$OrcQuemCriou			= $SolicitacoesROW["OrcQuemCriou"];
+$OrcAprovadoReprovado   = $SolicitacoesROW["OrcAprovadoReprovado"];
+$OrcTitulo		        = $SolicitacoesROW["OrcTitulo"];
+$OSDescricao		        = $SolicitacoesROW["OSDescricao"];
+
+					 
+					 ?>
+									<div class="alert alert-info fade show" role="alert"><?php echo $OSDescricao;	 ?>	</div>	
+												
+												<?php }} ?>
+												
+												
 												 
 											</div>
 
 										</div>
-										<div class="page-title-actions">
-
-
-											<style>
-												[type="file"] {
-													height: 0;
-													overflow: hidden;
-													width: 0;
-												}
-												
-												[type="file"]+ label {}
-											</style>
-
- 
-											
-											
-											 
-											 
-											
-											
-											<form action="SolicitacaoDetalhe.php?sol=<?php echo $_GET["sol"]; ?>" method="post" enctype="multipart/form-data" name="formfoto" id="formfoto" title="formfoto">
-												
-												
-												
-												<input type="hidden" name="action" value="submit"/>
-												 
-												<input type="hidden" name="solicitacao_id" value="<?php echo $_GET["sol"]; ?>">
-
-
-
-
-												<a href="novo.php"> <button type="button" data-toggle="tooltip"   data-placement="bottom"
-                                    class="btn-shadow mr-3 btn btn-gradient-success">
-                                    <i class="pe-7s-plus"></i> Nova
-                                </button></a>
-											
-
-         
-
-												<?// MOSTRA O MENU DE AÇÕES APENAS PARA O NIVEL PROFISSIONAL ?>
-											
-											
-
-												<?php if ($managerlevel2 =='profissional') { ?>
-												<div class="d-inline-block dropdown">
-													<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
-                                                <span class="btn-icon-wrapper pr-2 opacity-7">
-                                                    <i class="fa fa-business-time fa-w-20"></i>
-                                                </span>
-                                                Ações
-                                            </button>
-												
-
-													<div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-														<ul class="nav flex-column">
-															<li class="nav-item">
-																<a class="nav-link" data-toggle="modal" data-target="#AddModal">
-                                                            <i class="nav-link-icon lnr-pushpin"></i>
-                                                            <span> Adicionar tarefa</span>
-                                                         </a>
-															
-
-															</li>
-															
-															<li class="nav-item">
-																<a class="nav-link" data-toggle="modal" data-target="#Budget">
-                                                            <i class="nav-link-icon pe-7s-cash"></i>
-                                                            <span> Criar orçamento</span>
-                                                         </a>
-															
-
-															</li>
-															
-															
-															<li class="nav-item">
-																<a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-                                                            <i class="nav-link-icon lnr-mustache" ></i>
-                                                            <span> Especialista</span>
-                                                         </a>
-															
-
-
-
-															</li>
-															 
-															<li class="nav-item">
-																<a class="nav-link" data-toggle="modal" data-target="#FotoAddModal">
-                                                            <i class="nav-link-icon pe-7s-box2"></i>
-                                                            <span> Utilizar material do estoque</span>
-                                                        </a>
-															
-
-															</li>
-															<li class="nav-item">
-																<a class="nav-link" data-toggle="modal" data-target=".bd-example-modal-sm">
-                                                            <i class="nav-link-icon lnr-checkmark-circle"></i>
-                                                            <span> Finalizar solicitação</span>
-                                                        </a>
-															
-
-
-
-
-															</li>
-														</ul>
-													</div>
-												</div>
-												<?php } ?>
-											
-											 
-
-												<?// MOSTRA O MENU DE AÇÕES APENAS PARA O NIVEL PROFISSIONAL ?>
-
-
-											</form>
-											<script>
-												document.getElementById( "file" ).onchange = function () {
-													document.getElementById( "formfoto" ).submit();
-												};
-											</script>
-
- 
- 
-
-
-
-
-										</div>
+										 
 									</div>
 
 
@@ -1022,7 +229,25 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 								
 							
 
-								 
+								 <?php 
+					 
+					 	
+$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL );
+		 
+	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {
+		while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
+
+
+$OrcId    				= $SolicitacoesROW["OrcId"];
+$OrcSoli				= $SolicitacoesROW["OrcSoli"];
+$OrcData		        = $SolicitacoesROW["OrcData"];
+$OrcQuemCriou			= $SolicitacoesROW["OrcQuemCriou"];
+$OrcAprovadoReprovado   = $SolicitacoesROW["OrcAprovadoReprovado"];
+$OrcTitulo		        = $SolicitacoesROW["OrcTitulo"];
+$OSDescricao		        = $SolicitacoesROW["OSDescricao"];
+
+					 
+					 ?>
 
 
 								<div class="row">
@@ -1032,59 +257,29 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 
 										<div class="card mb-3 widget-content">
 											<div class="widget-content-outer">
-												<div class="widget-content-wrapper">
-													<div class="widget-content-left">
+												 
+         
 
-														<div class="widget-heading" style="font-size: 18px;"></div>
-														<div class=" timeline-title" style="padding: 5px; color:black; font-weight: normal;">
-
-															<h4>
-																<?php echo $OSDescricao; ?>
-															</h4>
-
-
-															<?php echo $OSObs ; ?>
-
-														</div>
-													</div>
-													
-												
-
-												</div>
-												
-													
-
-
-												<div class="widget-progress-wrapper ">
+												<div class="widget-progress" onClick="window.location='Orcamento.php?sol=<?php echo $_GET['sol']?>&orc=<?php echo $OrcId; ?>';" style="cursor: pointer;">
 
 													<div class="">
-														<div class=" "> Criado por
-															<b class="text-primary">
-																<?php echo $SoliNome; ; ?>/
-																<?php echo $SoliCargo ; ?>
+														<div class=" "><b>#<?php echo sprintf('%04d', $OrcId);?><?php echo $OrcTitulo; ; ?></b>  <br>
+														Criado por 	<b class="text-primary">
+																<?php echo $OrcQuemCriou; ; ?> 
 															</b>
-															<Br>em <b class="text-primary">12/10/2020</b> às <b class="text-primary">14:44</b><br>
+															<Br>em <b class="text-primary"><?php echo date('d/m/Y', strtotime($OrcData));?></b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($OrcData));?></b><br>
 
-															<i class="ion-android-call"></i>
-															<?php echo $SoliTelefone ; ?> <br>
-															<i class="lnr-envelope"></i>
-															<?php echo $SoliEmail ; ?> <br>
-															<i class="lnr-apartment"></i>
-															<?php echo $Solicidade ; ?>/
-															<?php echo $SoliEstado ; ?> <br> Vence em:
-															<b class="text-primary">
-																<?php echo date('d/m/Y', strtotime($OSVencimento));?> </b>
-
+															  
+															 
+															 <div class="badge badge-pill badge-info ml-2"><?php echo $OrcAprovadoReprovado ; ?></div>
+															 
+															 
 
 
 
 
 														</div>
-														<div class="sub-label-right">
-
-
-
-												</div>
+														 
 															
 											</div>
 
@@ -1101,6 +296,9 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 												 
 
 										</div>
+													
+													
+													 
 
 
 
@@ -1111,25 +309,14 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 											
 										</div></div>
 									
-									<div class="row">
-										 <div class="col-md-12">
-											 
-											 
-											 
-											 
-											 
-											 
 									 
-										</div>
-									</div>
-
-								 
+								 <?php } } ?>
 
 								 
 							</div>
 
 
-							<?php } } ?>
+							
 
 
 							<?php include "z_rodape.php";?>

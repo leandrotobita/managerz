@@ -422,7 +422,7 @@ $SQL_adicionafoto_historico = "
 
 				$APROVA_REPROVASQL = "
 			
-			UPDATE gz_tarefas SET TarefaOrcamentoAprovarReprovar = '".$_GET['z']."' WHERE TarefaId = '" . $_GET['i'] . "'
+			UPDATE gz_tarefas SET TarefaStatus = '".$_GET['z']."' WHERE TarefaId = '" . $_GET['i'] . "'
 			
 			";
 
@@ -448,7 +448,7 @@ $SQL_adicionafoto_historico = "
 (
 	'" . $_GET[ "i" ] . "',
 	'" . $_GET[ "sol" ] . "',
-	'" . 'o orçamento <b>' . $_GET[ "f" ] . '</b> foi '.  $_GET[ "z" ] . "',
+	'" . 'A tarefa <b>' . $_GET[ "f" ] . '</b> foi '.  "finalizada.". "',
 	NOW(),
 '" . $login_cookie . "'
 )
@@ -874,8 +874,7 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 											<div class="page-title-icon">
 												<i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
 											</div>
-											<div>Solicitação #
-												<?php echo sprintf('%04d', $SoliId);?><br>
+											<div>Solicitação #<?php echo sprintf('%04d', $SoliId);?><br>
 												<?php echo $SoliDescempresa ; ?>
 												<div class="page-title-subheading">Categoria:
 													<?php echo $Categoria; ?><br>Tipo:
@@ -1064,7 +1063,12 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 
 							 
 
-								<div class="alert alert-info fade show" role="alert"><?php echo $QTDE_VENDAS_ULTIMOANO; ?> orçamentos </div>
+								<div class="alert alert-info fade show" role="alert">
+							
+							<a href="OrcamentoLista.php?sol=<?php echo $_GET['sol']; ?>"><?php echo $QTDE_VENDAS_ULTIMOANO; ?> orçamentos</a>
+							
+							
+							</div>
 							
 							
 							
@@ -1106,7 +1110,7 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 																<?php echo $SoliNome; ; ?>/
 																<?php echo $SoliCargo ; ?>
 															</b>
-															<Br>em <b class="text-primary">12/10/2020</b> às <b class="text-primary">14:44</b><br>
+															<Br>em <b class="text-primary"><?php echo date('d/m/Y', strtotime($DataCadastro));?> </b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($DataCadastro));?></b><br>
 
 															<i class="ion-android-call"></i>
 															<?php echo $SoliTelefone ; ?> <br>
@@ -1287,14 +1291,11 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 																				<div class="menu-header-content">
 																					<div>
 																						 
-																						<?php if ($TarefaOrcamentoAprovarReprovar[$index] == "APROVACAO SOLICITADA" ) {?>
-																						<h5 class="menu-header-title">Aprovar orçamento</h5>
-																						<h6 class="menu-header-subtitle">Você aprova este orçamento ?</h6>
-																						<?php } else {?>
+																					 
 																						
 																						<h5 class="menu-header-title">Finalizar Tarefa</h5>
-																						<h6 class="menu-header-subtitle">Gostaria de finalizar esta tarefa?</h6>
-																						<?php } ?>
+																						<h6 class="menu-header-subtitle"><b><?php echo $TarefaTitulo[$index];?></b> ?</h6>
+																						 
 																					</div>
 
 																				</div>
@@ -1302,67 +1303,38 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 																		</div>
 
 
-
-
-
+ 
 																		
 																	
 
-<a href="SolicitacaoDetalhe.php?sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>">
+ 
 													
 	
 	
-	<?php if (  $TarefaOrcamento[$index] == "SIM" ) { ?> 
+	 
 	
 	
-	<?php if (  $login_cookie == "supervisor" ||  $login_cookie == "manageradmin" ) { ?> 
-	                   
-									<div style="width: 100%;   text-align: center;" >
-	<a href="SolicitacaoDetalhe.php?z=APROVADO&sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>">
-										<button type="button"   class="btn-shadow btn btn-success">
-                                                <span class="btn-icon-wrapper pr-2 opacity-7">
-                                                    <i class="fa lnr-thumbs-up fa-w-20"></i>
-                                                </span>
-                                                Aprovar
-                                            </button>
-										</a>
-										
-										
-										
-										
-										&nbsp; &nbsp; &nbsp; 
-	<a href="SolicitacaoDetalhe.php?z=REPROVADO&sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>">
-		<button type="button"   class="btn-shadow btn btn-danger">
-                                                <span class="btn-icon-wrapper pr-2 opacity-7">
-                                                    <i class="fa lnr-thumbs-up fa-w-20"></i>
-                                                </span>
-                                                Reprovar
-                                            </button>
-		</a<
-	
-								</div> <?php } else {  ?>
+	 
 	
 	
-	<a href="SolicitacaoDetalhe.php?sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>">
-																		<button type="button" tabindex="0" class="dropdown-item" onClick="windows.location:">CLIQUE AQUI PARA FINALIZAR ESTA TAREFA</button>
+	<a href="SolicitacaoDetalhe.php?sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>&z=02 - feito">
+																		<button type="button" tabindex="0" class="dropdown-item"  >Finalizar</button>
 																			</a>
 	
-	
-	<?php } ?>
-	
+	 
 	
 	
 	
 	
 	
 	
-																			</a>
+	
+																		 
 
 
 																	</div> 
 																		
-																		<?php } else { ?> <small>Aguardando aprovação</small> <?php   } ?>
-
+																		 
 
 
 
