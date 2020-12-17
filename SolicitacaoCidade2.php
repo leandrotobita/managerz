@@ -277,13 +277,43 @@ $AprovadoReprovado[] = $SolicitacoesROW["AprovadoReprovado"];
                              <?php } ?>
 						
                         </div>
+					
+					
+					<div class="row">
+                            <div class="col-md-12">
+                                <div class="main-card mb-3 card">
+                                     
+                                    <div class="table-responsive">
+                                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                            <thead>
+
+                                                <tr>
+                                                    <th class="text-center">#</th>
+                                                    <th>Descricao</th>
+                                                    <th class="text-center">Loja</th>
+                                                    <th class="text-center">Status</th>
+                                                    
+                                                    <th class="text-center"> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												<td>xxx</td>
+												<td>xxx</td>
+												<td>xxx</td>
+												<td>xxx</td>
+												<td>xxxx</td>
+											</tdoby>	
+										
+										</table>
+												
+											</div></div></div></div>
+												
+												
+												
+												
+												
 					 
-                    <div class="tabs-animation">
-                         
-                         
-                         
-                           
-                    </div>
+                  
                 </div>
 					 
 					 
