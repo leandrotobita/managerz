@@ -14,6 +14,23 @@ if ( mysqli_num_rows( $abertoRES ) > 0 ) {
 	while ( $abertoROW = mysqli_fetch_array( $abertoRES ) ) {  $qtde_aberto = $abertoROW["QTDE"]; } }
 												
 ?>
+
+<?php 
+// CONTADOR DE ORÇAMENTOS abertos
+
+if ($managerlevel2 == "profissional") { 
+$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado != 'Aprovado'";
+} else {
+$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado != 'Aprovado'";		
+}
+
+
+$orcabertoRES = mysqli_query( $connect, $orcabertoSQL ); 
+if ( mysqli_num_rows( $orcabertoRES ) > 0 ) { 
+	while ( $orcabertoROW = mysqli_fetch_array( $orcabertoRES ) ) {  $orcaberto = $orcabertoROW["qtde_orcamentos"]; } }
+												
+?>
+ 
 				<div class="scrollbar-sidebar" style="width: 100%;"  <?php  // tinha uma css class chato aquo, o (scrollbar-sidebar) que mostrava uma bandeira estranha!!! ?></div>
 
  <div class="dropdown-menu-header mb-0">
@@ -103,7 +120,13 @@ if ( mysqli_num_rows( $abertoRES ) > 0 ) {
                              
                              <li  >
                                         <a href="OrcamentoTodos.php?p=orcamentos" <?php if ($_GET['p'] == 'orcamentos') { ?>class="mm-active"    <?php } else { ?>  <?php } ?>  >
-                                           <i class="metismenu-icon pe-7s-cash"></i>Orçamentos 
+                                           <i class="metismenu-icon pe-7s-cash"></i>Orçamentos  
+											
+											<?php if ( $orcaberto == '0') {  } else  { ?>
+											<b  class="badge badge-pill badge-danger" style="float: right;"> <?php echo $orcaberto; ?>   </b>
+											<?php } ?>
+											
+											
                                         </a>
                                     </li>
                            

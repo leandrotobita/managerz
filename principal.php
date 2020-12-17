@@ -29,12 +29,12 @@ else
 			
 			
 	$MONTA_LISTA_EMPRESA_SQL = "SELECT gz_empresas.GZ_EMPRESA_ID, gz_empresas.FANTASIA as SoliDescempresa  FROM gz_solicitacoes
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa WHERE Status != '3'  GROUP BY FANTASIA order by FANTASIA ASC";
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa    GROUP BY FANTASIA order by FANTASIA ASC";
 		
 		} else {
 			
 	$MONTA_LISTA_EMPRESA_SQL = "SELECT gz_empresas.GZ_EMPRESA_ID, gz_empresas.FANTASIA as SoliDescempresa  FROM gz_solicitacoes
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa WHERE Status != '3' and  UsuarioLogado = '".$login_cookie."' GROUP BY FANTASIA order by FANTASIA ASC";
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa      where  UsuarioLogado = '".$login_cookie."' GROUP BY FANTASIA order by FANTASIA ASC";
 				
 			
 		}
@@ -48,6 +48,8 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 
 	$gGZ_EMPRESA_ID[]   = $MONTA_LISTA_EMPRESA_ROW["GZ_EMPRESA_ID"];
 	$gSoliDescempresa[] = $MONTA_LISTA_EMPRESA_ROW["SoliDescempresa"];
+		
+		
 		
 	}}
 
@@ -129,7 +131,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
                                 <div class="page-title-icon">
                                     <i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
                                 </div>
-                                <div> Dashboard
+                                <div> Dashboard   
                                     <div class="page-title-subheading">Solicitações abertas</div>
                                 </div>
                             </div>
@@ -145,26 +147,44 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
                          
 						 <div class="col-lg-12 col-xl-12 " >
                                 <div id="accordion" class="accordion-wrapper mb-3">
+									<?php $i =1; ?>
+									<?php foreach ($gGZ_EMPRESA_ID as $index => $value ) {  
+		
+		
 									
-									<?php foreach ($gGZ_EMPRESA_ID as $index => $value ) { ?>
+		                              $a =  $i++;
+									 
+									?> 
+									
+									
                                     <div class="card">
                                         <div id="heading<?php echo $gGZ_EMPRESA_ID[$index]; ?>" class="card-header">
                                             <button type="button" data-toggle="collapse" data-target="#collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>"
                                                 aria-expanded="true" aria-controls="collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>"
                                                 class="text-left m-0 p-0 btn btn-link btn-block">
-                                               <?php echo $gSoliDescempresa[$index]?>
+                                               <?php echo $gSoliDescempresa[$index] ?> 
                                             </button>
                                         </div>
                                         <div data-parent="#accordion" id="collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>" aria-labelledby="headingOne"
-                                            class="collapse hidden">
+											 
+											 <?php if ($a == '1') { ?>
+                                            class="collapse show"      
+											 
+											 <?php } else { ?>
+											 class="collapse hidden"  
+											 <?php } ?>
+											 
+											 >
                                             <div class="card-body">
 												
-												
+											 <div class="table-responsive">
+                                	
 												<table class="align-middle mb-0 table table-borderless table-striped table-hover">
                                             <thead>
 
                                                 <tr>
                                                     <th class="text-center">#</th>
+													 <th>Data</th>
                                                     <th>Nome</th>
                                                     
                                                     <th class="text-center">Cidade</th>
@@ -207,7 +227,7 @@ AprovadoReprovado
  FROM gz_solicitacoes
 
 LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa WHERE Status != '3'  and  SoliEmpresa = '".$gGZ_EMPRESA_ID[$index]."' order by SoliId DESC
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa WHERE        SoliEmpresa = '".$gGZ_EMPRESA_ID[$index]."' order by SoliId DESC
 ";
 						$RES_lista_solicitacoes = mysqli_query( $connect, $SQL_lista_solicitacoes );
 	if ( mysqli_num_rows( $RES_lista_solicitacoes ) > 0 ) {
@@ -219,7 +239,9 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 												?>
 												
 												<TR>
-												<td> <?php echo $row_lista_solicitacoes["SoliId"];?>    </td>
+												<td><?php echo sprintf('%04d', $row_lista_solicitacoes["SoliId"]);?>     </td>
+													
+													<td> <?php echo $row_lista_solicitacoes["DATACADASTRO"];?>    </td> 
 												<td> <?php echo $row_lista_solicitacoes["SoliNome"];?> </td>
 										 
 												<td> <?php echo $row_lista_solicitacoes["Solicidade"];?> </td>
@@ -261,7 +283,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 											</tbody>
 												</table>
 												
-												
+												</div>
 												
 												
 												

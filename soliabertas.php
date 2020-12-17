@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 session_start();
 if ( isset($_COOKIE['login'] ) )
@@ -23,122 +23,40 @@ else
 		
 ?> 
 
- <?php
-	// Busco todas as solicitações
-
-	if ($managerlevel2 == "profissional") { 
-	
-	$SolicitacoesSQL = "
-	SELECT 
-SoliId,
-SoliNome,
-SoliTelefone,
-SoliEmpresa,
-gz_empresas.FANTASIA as SoliDescempresa,
-SoliCargo,
-SoliEmail,
-Solicidade,
-SoliEstado,
-OSDescricao,
-OSCategoria,
-solicategoria.SoliCatDescricao as Categoria,
-OSTipo,
-OSLocal,
-OSVencimento,
-OSObs,
-OSPrioridade,
-DATE_FORMAT(DataCadastro,'%d/%m/%Y') as DATACADASTRO,
-TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
-UsuarioLogado,
-IpUsuario,
-Status as SoliStatus,
-AprovadoReprovado
- FROM gz_solicitacoes
-
-LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa  where status != '3' order by SoliId DESC
-	";
-	
-	
-	}  else {
+<?php // primeiro eu vou pegar todos os nomes das empresas para depois em outro select, mostar as solicitações desta empresa selecionada // $managerlevel2 == "profissional
 		
-		$SolicitacoesSQL = "
-	SELECT 
-SoliId,
-SoliNome,
-SoliTelefone,
-SoliEmpresa,
-gz_empresas.FANTASIA as SoliDescempresa,
-SoliCargo,
-SoliEmail,
-Solicidade,
-SoliEstado,
-OSDescricao,
-OSCategoria,
-solicategoria.SoliCatDescricao as Categoria,
-OSTipo,
-OSLocal,
-OSVencimento,
-OSObs,
-OSPrioridade,
-DATE_FORMAT(DataCadastro,'%d/%m/%Y') as DATACADASTRO,
-TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
-UsuarioLogado,
-IpUsuario,
-Status as SoliStatus,
-AprovadoReprovado
- FROM gz_solicitacoes
-
-LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
-LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa  where status != '3' and UsuarioLogado = '".$login_cookie."' order by SoliId DESC
-	";
+		if ($managerlevel2 == "profissional") { 
+			
+			
+	$MONTA_LISTA_EMPRESA_SQL = "SELECT gz_empresas.GZ_EMPRESA_ID, gz_empresas.FANTASIA as SoliDescempresa  FROM gz_solicitacoes
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa  where Status != '3'    GROUP BY FANTASIA order by FANTASIA ASC";
 		
-		
-	}
-
-	$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL );
-
-	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {
-
-
-
-
-
-
-		while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
-
-
-
-$SoliId[]        = $SolicitacoesROW["SoliId"];	
-$SoliNome[]      = $SolicitacoesROW["SoliNome"];      
-$SoliTelefone[]  = $SolicitacoesROW["SoliTelefone"];
-$SoliEmpresa[]   = $SolicitacoesROW["SoliEmpresa"];
-$SoliCargo[]     = $SolicitacoesROW["SoliCargo"];
-$SoliEmail[]     = $SolicitacoesROW["SoliEmail"];
-$Solicidade[]    = $SolicitacoesROW["Solicidade"];
-$SoliEstado[]    = $SolicitacoesROW["SoliEstado"];
-$OSDescricao[]   = $SolicitacoesROW["OSDescricao"];
-$OSCategoria[]   = $SolicitacoesROW["OSCategoria"];
-$Categoria[]     = $SolicitacoesROW["Categoria"];
-$OSTipo[]        = $SolicitacoesROW["OSTipo"];
-$OSLocal[]       = $SolicitacoesROW["OSLocal"];
-$OSVencimento[]  = $SolicitacoesROW["OSVencimento"];
-$OSObs[]         = $SolicitacoesROW["OSObs"];
-$OSPrioridade[]  = $SolicitacoesROW["OSPrioridade"];
-$DataCadastro[]  = $SolicitacoesROW["DATACADASTRO"];
-$HoraCadastro[]  = $SolicitacoesROW["HORACADASATRO"];
-$UsuarioLogado[] = $SolicitacoesROW["UsuarioLogado"];
-$IpUsuario[]     = $SolicitacoesROW["IpUsuario"];
-$SoliStatus[]        = $SolicitacoesROW["SoliStatus"];
-$SoliDescempresa[] = $SolicitacoesROW["SoliDescempresa"];			
-$AprovadoReprovado[] = $SolicitacoesROW["AprovadoReprovado"];			
-
-
+		} else {
+			
+	$MONTA_LISTA_EMPRESA_SQL = "SELECT gz_empresas.GZ_EMPRESA_ID, gz_empresas.FANTASIA as SoliDescempresa  FROM gz_solicitacoes
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa      where Status != '3' and UsuarioLogado = '".$login_cookie."' GROUP BY FANTASIA order by FANTASIA ASC";
+				
+			
 		}
+		
+		
+		
+		
+	$MONTA_LISTA_EMPRESA_RES = mysqli_query( $connect, $MONTA_LISTA_EMPRESA_SQL );
+	if ( mysqli_num_rows( $MONTA_LISTA_EMPRESA_RES ) > 0 ) {
+	while ( $MONTA_LISTA_EMPRESA_ROW = mysqli_fetch_array( $MONTA_LISTA_EMPRESA_RES ) ) {	 
 
-	}
+	$gGZ_EMPRESA_ID[]   = $MONTA_LISTA_EMPRESA_ROW["GZ_EMPRESA_ID"];
+	$gSoliDescempresa[] = $MONTA_LISTA_EMPRESA_ROW["SoliDescempresa"];
+		
+		
+		
+	}}
 
-	?>
+
+?>
+
+  
 <!doctype html>
 <html lang="en">
 
@@ -213,81 +131,172 @@ $AprovadoReprovado[] = $SolicitacoesROW["AprovadoReprovado"];
                                 <div class="page-title-icon">
                                     <i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
                                 </div>
-                                <div>Controle de Manutenção - Dashboard
-                                    <div class="page-title-subheading">Visão geral das solicitações de manutenção.</div>
+                                <div> Dashboard   
+                                    <div class="page-title-subheading">Solicitações abertas</div>
                                 </div>
                             </div>
-                            <div class="page-title-actions">
-                               <a href="novo.php"> <button type="button" data-toggle="tooltip"   data-placement="bottom"
-                                    class="btn-shadow mr-3 btn btn-gradient-success">
-                                    <i class="pe-7s-plus"></i> Nova solicitação
-                                </button></a>
-                                 
-                            </div>    </div>
+                                </div>
                     </div>       
 					
 					
 					
 					
-					<div class="row">
-						 
- 
-						
-						<?php foreach ($SoliId as $index => $value ) { ?>
-                            <div class="col-lg-6 col-xl-4 " >
-                                <div class="card mb-3 widget-content">
-                                    <div class="widget-content-outer">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">
-												<a href="SolicitacaoDetalhe.php?sol=<?php echo $SoliId[$index];?>">	
-													#<?php echo sprintf('%04d', $SoliId[$index]);?> <?php echo $SoliDescempresa[$index]?>
-													</a>
+					 
+					 
+                    <div class="row">
+                         
+						 <div class="col-lg-12 col-xl-12 " >
+                                <div id="accordion" class="accordion-wrapper mb-3">
+									<?php $i =1; ?>
+									<?php foreach ($gGZ_EMPRESA_ID as $index => $value ) {  
+		
+		
+									
+		                              $a =  $i++;
+									 
+									?> 
+									
+									
+                                    <div class="card">
+                                        <div id="heading<?php echo $gGZ_EMPRESA_ID[$index]; ?>" class="card-header">
+                                            <button type="button" data-toggle="collapse" data-target="#collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>"
+                                                aria-expanded="true" aria-controls="collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>"
+                                                class="text-left m-0 p-0 btn btn-link btn-block">
+                                               <?php echo $gSoliDescempresa[$index] ?> 
+                                            </button>
+                                        </div>
+                                        <div data-parent="#accordion" id="collapse<?php echo $gGZ_EMPRESA_ID[$index]; ?>" aria-labelledby="headingOne"
+											 
+											 <?php if ($a == '1') { ?>
+                                            class="collapse show"      
+											 
+											 <?php } else { ?>
+											 class="collapse hidden"  
+											 <?php } ?>
+											 
+											 >
+                                            <div class="card-body">
 												
-												</div>
-                                                <div class="widget-subheading" style="padding: 5px; color:black;"><?php echo $OSDescricao[$index]?></div>
-                                            </div>
-                                            <div class="widget-content-right" style="  text-align:right;">
-												
-												
+												<div class="table-responsive">
+												<table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                            <thead>
+
+                                                <tr>
+                                                    <th class="text-center">#</th>
+													 <th>Data</th>
+                                                    <th>Nome</th>
+                                                    
+                                                    <th class="text-center">Cidade</th>
+                                                    <th class="text-center">Descrição</th>
+                                                     
+													
+													<th class="text-center">Status </th>
+													
+													<th class="text-center">  </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												<?php 
+												$SQL_lista_solicitacoes = "
 												 
-                                                <?php if ($SoliStatus[$index] =='1') { ?>
+SELECT 
+SoliId,
+SoliNome,
+SoliTelefone,
+SoliEmpresa,
+gz_empresas.FANTASIA as SoliDescempresa,
+SoliCargo,
+SoliEmail,
+Solicidade,
+SoliEstado,
+OSDescricao,
+OSCategoria,
+solicategoria.SoliCatDescricao as Categoria,
+OSTipo,
+OSLocal,
+OSVencimento,
+OSObs,
+OSPrioridade,
+DATE_FORMAT(DataCadastro,'%d/%m/%Y') as DATACADASTRO,
+TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
+UsuarioLogado,
+IpUsuario,
+Status as SoliStatus,	
+AprovadoReprovado
+ FROM gz_solicitacoes
+
+LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
+LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa WHERE Status != '3' and        SoliEmpresa = '".$gGZ_EMPRESA_ID[$index]."' order by SoliId DESC
+";
+						$RES_lista_solicitacoes = mysqli_query( $connect, $SQL_lista_solicitacoes );
+	if ( mysqli_num_rows( $RES_lista_solicitacoes ) > 0 ) {
+	while ( $row_lista_solicitacoes = mysqli_fetch_array( $RES_lista_solicitacoes ) ) {	 
+
+	 
+ 		
+		
+												?>
+												
+												<TR>
+												<td><?php echo sprintf('%04d', $row_lista_solicitacoes["SoliId"]);?>     </td>
+													
+													<td> <?php echo $row_lista_solicitacoes["DATACADASTRO"];?>    </td> 
+												<td> <?php echo $row_lista_solicitacoes["SoliNome"];?> </td>
+										 
+												<td> <?php echo $row_lista_solicitacoes["Solicidade"];?> </td>
+											 
+												<td> <?php echo $row_lista_solicitacoes["OSDescricao"];?> </td>
+												
+												<td> 
+													
+														 
+                                                <?php if ($row_lista_solicitacoes["SoliStatus"] =='1') { ?>
 					
 					<div class="badge badge-pill badge-primary">Novo</div>
 					
-					<?php } else if ($SoliStatus[$index] =='2') { ?>
+					<?php } else if ($row_lista_solicitacoes["SoliStatus"] =='2') { ?>
 					
 					<div class="badge badge-pill badge-warning">Em andamento</div>
 					
-					<?php } else if ($SoliStatus[$index] =='3') { ?>
+					<?php } else if ($row_lista_solicitacoes["SoliStatus"] =='3') { ?>
 					
 					<div class="badge badge-pill badge-success">Finalizado</div>
 					
 					<?php } ?>
 												
-												 
-													  
+													
+													
+													</td>
+													
+													<td>  
+														 
+														  
+														 
+													<button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onClick="window.location='SolicitacaoDetalhe.php?sol=<?php echo $row_lista_solicitacoes["SoliId"];?>';" style="cursor: pointer;">Visualizar</button>	
+														
+														
+														    </td>
+												</TR>
+												<?php }}?>
 												
-                                            </div>
-                                        </div> 
-										
-						    
-                                        <div class="widget-progress-wrapper">
-                                            
-											<div class="progress-sub-label">
-                                                <div class="sub-label-left"><small>Criado por <b class="text-primary"><?php echo $UsuarioLogado[$index]; ?></b> em <b class="text-primary"><?php echo $DataCadastro[$index]; ?></b> às <b class="text-primary"><?php echo $HoraCadastro[$index]; ?></b></small></div>
-                                                <div class="sub-label-right"> </div>
+											</tbody>
+												</table>
+												
+												
+												
+												</div>
+												
+												
+												
+												
                                             </div>
                                         </div>
                                     </div>
+									<?php } ?>
+                                     
+                                     
                                 </div>
                             </div>
-                             <?php } ?>
-						
-                        </div>
-					 
-                    <div class="tabs-animation">
-                         
                          
                          
                            
