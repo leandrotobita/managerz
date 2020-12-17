@@ -1,55 +1,35 @@
+<?php
 
 
-<!DOCTYPE html>
-<html lang="en" >
+$mensagem = "Lorem *ipsum dolor sit amet*, consectetur adipiscing elit. Integer suscipit erat quis tristique scelerisque. Vivamus posuere fermentum elit, eu interdum urna. Praesent tristique viverra iaculis. Integer vehicula augue at leo elementum, vitae suscipit eros ullamcorper. ";
 
-<head>
+$curl = curl_init();
 
-  <meta charset="UTF-8">
-  
- 
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "v4.chatpro.com.br/chatpro-uh926l6cl9/api/v1/send_message",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"".$mensagem."\",\r\n  \"number\": \"17981251907\"\r\n}",
+  CURLOPT_HTTPHEADER => array(
+    "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
+    "cache-control: no-cache"
+  ),
+));
 
-  <title>CodePen - open bootstrap modal  on page load </title>
-  
-  
-  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-  
- 
+$response = curl_exec($curl);
+$err = curl_error($curl);
 
-</head>
+curl_close($curl);
 
-<body   >
-  <div id="xxx" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
-      <div class="modal-body">
-        <p>Some text in the modal.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
 
-  </div>
-</div>
- 
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
-      <script id="rendered-js" >
-$(window).load(function () {
-  $('#xxx').modal('show');
-});
- 
-    </script>
 
-  
-
-</body>
-
-</html>
- 
+?> 

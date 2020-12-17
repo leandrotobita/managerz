@@ -60,15 +60,13 @@ OrcData,
 OrcQuemCriou,
 OrcAprovadoReprovado,
 OrcTitulo,
-SoliId, OSDescricao
+SoliId, OrcTitulo, OrcDestino
  
 
 from orcamento
 
-LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli
-
+LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli order by OrcId desc
  
-WHERE OrcSoli = '".$_GET[ 'sol' ]."'
 	";
 
 			?>
@@ -86,7 +84,7 @@ OrcData,
 OrcQuemCriou,
 OrcAprovadoReprovado,
 OrcTitulo,
-SoliId, OSDescricao
+SoliId,   OrcTitulo, OrcDestino
  
 
 from orcamento
@@ -107,7 +105,7 @@ WHERE OrcSoli = '".$_GET[ 'sol' ]."' limit 1
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<meta http-equiv="Content-Language" content="pt-br">
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<title>Manager Z - Orçamento</title>
+			<title>Manager Z - Todos os Orçamento</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"/>
 				
 				
@@ -183,10 +181,9 @@ WHERE OrcSoli = '".$_GET[ 'sol' ]."' limit 1
 									<div class="page-title-wrapper">
 										<div class="page-title-heading">
 											<div class="page-title-icon">
-												<i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
+												<i class="pe-7s-cash icon-gradient bg-mean-fruit"></i>
 											</div>
-											<div>Solicitação <a href="SolicitacaoDetalhe.php?sol=<?php echo $_GET['sol']; ?>">#<?php echo sprintf('%04d', $_GET["sol"]);?></a><br>
-												Orçamentos para:<br>
+											<div>Orçamentos em aberto
 												
 								 <?php 
 					 
@@ -227,90 +224,89 @@ $OSDescricao		        = $SolicitacoesROW["OSDescricao"];
 
 								</div>
 								
-							
+							<div class="row">
+                            <div class="col-md-12">
+                                <div class="main-card mb-3 card">
+                                     
+                                    <div class="table-responsive">
+                                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                            <thead>
 
-								 <?php 
-					 
-					 	
-$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL );
+                                                <tr>
+                                                    <th class="text-center">#</th>
+                                                    <th>Descricao</th>
+                                                    <th class="text-center">Loja</th>
+                                                    <th class="text-center">Status</th>
+                                                    
+                                                    <th class="text-center"> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+												
+												<?php 					 	
+$SolicitacoesRES = mysqli_query( $connect, $SolicitacoesSQL ); 
 		 
-	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {
-		while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
+	if ( mysqli_num_rows( $SolicitacoesRES ) > 0 ) {  while ( $SolicitacoesROW = mysqli_fetch_array( $SolicitacoesRES ) ) {
 
 
-$OrcId    				= $SolicitacoesROW["OrcId"];
-$OrcSoli				= $SolicitacoesROW["OrcSoli"];
-$OrcData		        = $SolicitacoesROW["OrcData"];
-$OrcQuemCriou			= $SolicitacoesROW["OrcQuemCriou"];
-$OrcAprovadoReprovado   = $SolicitacoesROW["OrcAprovadoReprovado"];
-$OrcTitulo		        = $SolicitacoesROW["OrcTitulo"];
-$OSDescricao		        = $SolicitacoesROW["OSDescricao"];
+$OrcId    				= $SolicitacoesROW["OrcId"]; 								$OrcSoli				= $SolicitacoesROW["OrcSoli"];
+$OrcData		        = $SolicitacoesROW["OrcData"];								$OrcQuemCriou			= $SolicitacoesROW["OrcQuemCriou"];
+$OrcAprovadoReprovado   = $SolicitacoesROW["OrcAprovadoReprovado"]; 				$OrcTitulo		        = $SolicitacoesROW["OrcTitulo"];
+$OrcTitulo		    = $SolicitacoesROW["OrcTitulo"];							$OrcDestino		        = $SolicitacoesROW["OrcDestino"];
+ ?>
 
-					 
-					 ?>
+                                                <tr>
+                                                    <td class="text-center text-muted">#<?php echo sprintf('%04d', $OrcId);?> </td>
+                                                    <td>
+                                                        <div class="widget-content p-0">
+                                                            <div class="widget-content-wrapper">
+                                                                <div class="widget-content-left mr-3">
+                                                                    <div class="widget-content-left">
+                                                                        <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="widget-content-left flex2">
+                                                                    <div class="widget-heading"><?php echo $OrcTitulo; ?></div>
+                                                                    <div class="widget-subheading opacity-7"><small>Em <?php echo date('d/m/Y', strtotime($OrcData));?> às <?php echo date('H:m:s', strtotime($OrcData));?></small></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center"><?php echo $OrcDestino; ?></td>
+                                                    <td class="text-center">
+                                                        
+													 <button type="button"  data-placement="left" 
+									  
+									   <?php if  ($OrcAprovadoReprovado  =='Pendente') {  ?>   class="btn btn-info"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Em análise') {  ?>   class="btn btn-warning"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Não aprovado') {  ?>   class="btn btn-danger"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Aprovado') {  ?>   class="btn btn-success"  <?php } ?>
+									  
+									  
+									  
+									  
+									  
+									  >
+                                     <?php echo $OrcAprovadoReprovado ; ?>
+                                </button>
+														
+                                                    </td>
+                                                    
+                                                    <td class="text-center">
+                                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onClick="window.location='Orcamento.php?sol=<?php echo $OrcSoli;?>&orc=<?php echo $OrcId; ?>';" style="cursor: pointer;">Visualizar</button>
+                                                    </td>
+                                                </tr>
 
-
-								<div class="row">
-
-
-									<div class="col-lg-24 col-xl-12">
-
-										<div class="card mb-3 widget-content">
-											<div class="widget-content-outer">
-												 
-         
-
-												<div class="widget-progress" onClick="window.location='Orcamento.php?sol=<?php echo $_GET['sol']?>&orc=<?php echo $OrcId; ?>';" style="cursor: pointer;">
-
-													<div class="">
-														<div class=" "><b>#<?php echo sprintf('%04d', $OrcId);?> <?php echo $OrcTitulo; ; ?></b>  <br>
-														Criado por 	<b class="text-primary">
-																<?php echo $OrcQuemCriou; ; ?> 
-															</b>
-															<Br>em <b class="text-primary"><?php echo date('d/m/Y', strtotime($OrcData));?></b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($OrcData));?></b><br>
-
-															  
-															 
-															 <div class="badge badge-pill badge-info ml-2"><?php echo $OrcAprovadoReprovado ; ?></div>
-															 
-															 
-
-
-
-
-														</div>
-														 
-															
-											</div>
+<?php } } ?>                                                  
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
 
  
-														
-														
-														
-														
-													<div>
-
-														</div>
-
-
-												 
-
-										</div>
-													
-													
-													 
-
-
-
-									</div>
-
-
-								</div>
-											
-										</div></div>
-									
-									 
-								 <?php } } ?>
 
 								 
 							</div>

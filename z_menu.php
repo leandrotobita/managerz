@@ -99,9 +99,13 @@ if ( mysqli_num_rows( $abertoRES ) > 0 ) {
 							
 							<?php } ?>
                             
-                            
+                             <li class="app-sidebar__heading">ORÇAMENTOS</li>
                              
-                            
+                             <li  >
+                                        <a href="OrcamentoTodos.php?p=orcamentos" <?php if ($_GET['p'] == 'orcamentos') { ?>class="mm-active"    <?php } else { ?>  <?php } ?>  >
+                                           <i class="metismenu-icon pe-7s-cash"></i>Orçamentos 
+                                        </a>
+                                    </li>
                            
                         </ul>
                     </div>

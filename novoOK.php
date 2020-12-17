@@ -22,7 +22,7 @@ else
 		
 ?>
 <?php
-// Altero os dados quando clico em salvar
+// Altero os dados quando clico em salvar mnudardad
 	
 	
 	if(isset($_POST["submit"])){
@@ -75,6 +75,16 @@ else
 		 )";
 
 	 mysqli_query( $connect, $INSERE_SOLICITACAO_SQL );
+		$last_id = mysqli_insert_id($connect);
+		
+		 
+		
+// QTDE_VENDAS_ULTIMOANO
+$QTDE_VENDAS_ULTIMOANO_SQL = " select  FANTASIA from gz_empresas where GZ_EMPRESA_ID = '".$_POST['OSEmpresa']."' ";
+$QTDE_VENDAS_ULTIMOANO_RES = mysqli_query($connect, $QTDE_VENDAS_ULTIMOANO_SQL);
+if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIMOANO_ROW = mysqli_fetch_array($QTDE_VENDAS_ULTIMOANO_RES)) {$QTDE_VENDAS_ULTIMOANO = $QTDE_VENDAS_ULTIMOANO_ROW["FANTASIA"];  }}
+		
+		
 		if(mysqli_error($connect)){
 die(mysqli_error($connect));
 }
@@ -110,7 +120,39 @@ die(mysqli_error($connect));
 		
 	}
 		
+		
+		
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "v4.chatpro.com.br/chatpro-uh926l6cl9/api/v1/send_message",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Nova solicitação de  *".$_POST['SolicitanteNome']."*   ".$_POST['OSDescricao']." *Cidade*: ".$_POST['SolicitanteCidade']." *Empresa:* ".$QTDE_VENDAS_ULTIMOANO."  https://manager.grupozani.com.br/SolicitacaoDetalhe.php?sol=".$last_id." \",\r\n  \"number\": \"17991443964h\"\r\n}",
+  CURLOPT_HTTPHEADER => array(
+    "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
+    "cache-control: no-cache"
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+		
 ?>
+
+
 
  
 				 

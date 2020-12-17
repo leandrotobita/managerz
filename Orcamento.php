@@ -32,6 +32,17 @@ if ( isset( $login_cookie ) ) {
 														mysqli_query( $connect, $APDESA );
 			
 		}
+	
+	
+	
+	
+	
+	if ($_GET["st"] != '') {
+			
+			$APDESA = "UPDATE orcamento SET OrcAprovadoReprovado = '".$_GET["st"]."' where OrcId  = '".$_GET["orc"]."'";
+														mysqli_query( $connect, $APDESA );
+			
+		}
 														
 		
 // Inserir itens no orçamento.		
@@ -65,6 +76,38 @@ if (isset($_POST["additem"]))  {
 	";
 	
 	mysqli_query( $connect, $AdicionarItemSQL );
+	
+	 
+ 
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "v4.chatpro.com.br/chatpro-uh926l6cl9/api/v1/send_message",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Julio adicionou um novo ítem no orçamento #".$_POST['orc']." | ".$_POST['item']." Qtde: ".$_POST['itemqtde']." Valor: ".$_POST['itemvalor']."  https://manager.grupozani.com.br/Orcamento.php?orc=".$_POST['orc']." \",\r\n  \"number\": \"17981251907\"\r\n}",
+  CURLOPT_HTTPHEADER => array(
+    "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
+    "cache-control: no-cache"
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+
+ 
 	
 	?><script>window.location = "Orcamento.php?sol=<?php echo  $_POST['solicitacao_id']; ?>&orc=<?php echo  $_POST['orc']; ?>"</script><?php
 	
@@ -148,7 +191,7 @@ OrcData,
 OrcQuemCriou,
 OrcAprovadoReprovado,
 OrcTitulo,
-SoliId, OSDescricao
+SoliId, OrcTitulo, OrcDestino
  
 
 from orcamento
@@ -188,6 +231,12 @@ WHERE OrcId = '".$_GET[ 'orc' ]."'
 				
 				 
 				
+			<script type="text/javascript">
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+            </script>
 			</head>
 
 			<body>
@@ -231,7 +280,7 @@ WHERE OrcId = '".$_GET[ 'orc' ]."'
 							
 
 <?php include "z_menu.php";?>
-						</div>
+			</div>
 						<div class="app-main__outer">
 							
 
@@ -260,7 +309,7 @@ $OrcData		        = $SolicitacoesROW["OrcData"];
 $OrcQuemCriou			= $SolicitacoesROW["OrcQuemCriou"];
 $OrcAprovadoReprovado   = $SolicitacoesROW["OrcAprovadoReprovado"];
 $OrcTitulo		        = $SolicitacoesROW["OrcTitulo"];
-$OSDescricao            = $SolicitacoesROW["OSDescricao"];
+$OrcDestino            = $SolicitacoesROW["OrcDestino"];
 	
 
 					 
@@ -269,12 +318,13 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 									<div class="page-title-wrapper">
 										<div class="page-title-heading">
 											<div class="page-title-icon">
-												<i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
+												<i class="pe-7s-cash icon-gradient bg-mean-fruit"></i>
 											</div>
 											<div>Solicitação <a href="SolicitacaoDetalhe.php?sol=<?php echo $_GET["sol"]; ?>">#<?php echo sprintf('%04d', $_GET["sol"]);?></a><br>
-												Orçamento #<?php echo sprintf('%04d', $OrcId);?> 
+												Orçamento #<?php echo sprintf('%04d', $OrcId);?> | <?php echo $OrcDestino;?> 
 												 
 											</div>
+											
 
 										</div>
 										 
@@ -286,67 +336,117 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 
 
 
-								</div>
+							  </div>
 								
+								<?php
+										// VALOR APROVADO
+										$MAIOR_COMPRA_SQL = "SELECt SUM(OrcItemQTDE*OrcItemValor) AS TOTAL FROM orcamento_itens where OrcId = '".$_GET['orc']."' and 
+OrcItemAprovadoReprovado = 'APROVADO'
+  ";
+										$MAIOR_COMPRA_RES = mysqli_query($connect, $MAIOR_COMPRA_SQL);
+										if (mysqli_num_rows($MAIOR_COMPRA_RES) > 0) { while ($MAIOR_COMPRA_ROW = mysqli_fetch_array($MAIOR_COMPRA_RES)) { $MAIOR_COMPRA = $MAIOR_COMPRA_ROW["TOTAL"];     }}	
+										?>
+										
+										
+								
+								
+								<?php if ($MAIOR_COMPRA > '0') { ?>
+								 
+                                <div class="card mb-3 widget-content bg-happy-green">
+                                    <div class="widget-content-wrapper text-white">
+                                        <div class="widget-content-left">
+                                            <div class="widget-heading">Orçamento aprovado</div>
+                                         </div>
+                                        <div class="widget-content-right">
+                                            <div class="widget-numbers text-white"><span> <?php echo  number_format($MAIOR_COMPRA,2,",",".");?></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+								<?php } ?>
+                             
 
 								<div class="row">
 
 
 									<div class="col-lg-24 col-xl-12">
 
-										<div class="card mb-3 widget-content">
-											<div class="widget-content-outer">
-												 
-         
+										 
+           
 
-												<div class="widget-progress"  >
-
-													<div class="">
-														<div class=" "><b>#<?php echo sprintf('%04d', $OrcId);?><?php echo $OrcTitulo; ; ?></b>  <br>
+											  <div class="app-page-title app-page-title-simple">
+                        <div class="page-title-wrapper">
+                            <div class="page-title-heading">
+                                <div>
+                                    <div class="page-title-head center-elem">
+                                        <span class="d-inline-block pr-2">
+                                            <i class="lnr-apartment opacity-6"></i>
+                                        </span>
+                                        <span class="d-inline-block"><?php echo $OrcTitulo; ; ?></span>
+                                    </div>
+                                    <div class="page-title-subheading opacity-10">
+                                       
 														Criado por 	<b class="text-primary">
 																<?php echo $OrcQuemCriou; ; ?> 
 															</b>
-															<Br>em <b class="text-primary"><?php echo date('d/m/Y', strtotime($OrcData));?></b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($OrcData));?></b><br>
+															 em <b class="text-primary"><?php echo date('d/m/Y', strtotime($OrcData));?></b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($OrcData));?></b> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="page-title-actions">
+                                <div class="d-inline-block pr-3">
+								  
+									<form action="Orcamento.php" enctype="multipart/form-data" name="form" id="form">
+                                    <select name="myinput" class="custom-select" id="custom-inp-top" onChange="MM_jumpMenu('parent',this,0)" type="select"  >
+                                      <option value="#" selected="SELECTED">Alterar status...</option>
+                                      <option value="Orcamento.php?sol=<?php echo $OrcSoli?>&orc=<?php echo $OrcId; ?>&st=Em análise">Em análise</option>
+                                       <option value="Orcamento.php?sol=<?php echo $OrcSoli?>&orc=<?php echo $OrcId; ?>&st=Não aprovado">Não aprovado</option>
+                                        <option value="Orcamento.php?sol=<?php echo $OrcSoli?>&orc=<?php echo $OrcId; ?>&st=Aprovado">Aprovado</option>
+                                    </select>
+										</form>
+                                </div>
+								
+								
+								
+                              <button type="button"  data-placement="left" 
+									  
+									   <?php if  ($OrcAprovadoReprovado  =='Pendente') {  ?>   class="btn btn-info"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Em análise') {  ?>   class="btn btn-warning"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Não aprovado') {  ?>   class="btn btn-danger"  <?php } ?>
+									  <?php if  ($OrcAprovadoReprovado  =='Aprovado') {  ?>   class="btn btn-success"  <?php } ?>
+									  
+									  
+									  
+									  
+									  
+									  >
+                                    <i class="fa fa-battery-three-quarters"></i> <?php echo $OrcAprovadoReprovado ; ?>
+                                </button>
+								
+								
+								
+								
+                            </div>
+                        </div>
+                    </div>
+															
+															
+															
 
 															  
 															 
-															 <div class="badge badge-pill badge-info ml-2"><?php echo $OrcAprovadoReprovado ; ?></div>
 															 
 															 
+															  
 
-
-
-
-														</div>
-														 
-															
-											</div>
-
- 
-														
-														
-														
-														
-													<div>
-
-														</div>
-
-
-												 
-
-										</div>
-													
-													
+													 
+												
 													 
 
 
 
-									</div>
-
-
-								</div>
+							 
 											
-										</div>
+								  </div>
 									
 									<div class="col-lg-24 col-xl-12">
 										
@@ -409,7 +509,20 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 										
 										 <div class="col-lg-24 col-xl-12">
                                     <div class="main-card mb-3 card">
-                                        <div class="card-header">Itens deste orçamento</div>
+										
+										
+										
+										
+                                        <div class="card-header">Itens deste orçamento  
+											
+											
+											
+										
+										
+										
+										
+										
+										</div>
                                         <ul class="todo-list-wrapper list-group list-group-flush">
 											
 											
@@ -467,7 +580,7 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 									
 									
 									
-									</div>
+							  </div>
 									
 									 
 								 <?php } } ?>
@@ -497,7 +610,7 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 			</body>
 
 
-			</html>
+</html>
 
 
 
@@ -540,7 +653,7 @@ $OSDescricao            = $SolicitacoesROW["OSDescricao"];
 
 
     
-      <script id="rendered-js" >
+<script id="rendered-js" >
 $(window).load(function () {
   $('#Budget').modal('show').zIndex('99999');
 });
@@ -681,9 +794,9 @@ $(window).load(function () {
 
 
 
-						</div>
-					</div>
-				</div>
+				  </div>
+			  </div>
+</div>
 
 			</div>
 
@@ -776,9 +889,9 @@ $(window).load(function () {
 
 
 
-						</div>
-					</div>
-				</div>
+				  </div>
+			  </div>
+</div>
 
 
 				<?php // orçamento adicioanr ?>
@@ -790,7 +903,7 @@ $(window).load(function () {
 
 					?>
 
-				<script>
+<script>
 					window.location = "index.php";
 				</script>
 

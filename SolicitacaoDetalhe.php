@@ -56,7 +56,9 @@ if ( isset( $login_cookie ) ) {
 OrcSoli,
 OrcData,
 OrcQuemCriou,
-OrcAprovadoReprovado
+OrcAprovadoReprovado,
+OrcTitulo,
+OrcDestino
 
 )
 VALUES
@@ -64,7 +66,10 @@ VALUES
 '" . $_POST[ 'solicitacao_id' ] . "',
 NOW(),
 '" . $login_cookie . "',
-'PENDENTE DE APROVAÇÃO'
+'Pendente',
+'" . $_POST[ 'OrcTitulo' ] . "',
+'" . $_POST[ 'OrcDestino' ] . "'
+
 )";
 
 
@@ -1454,6 +1459,29 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 						<div class="col-md-8">
 							<div class="position-relative form-group">
 								<label for="ORCAMENTO_DESC">Deseja criar um orçamento para a solicitação <b><?php echo $_GET["sol"]; ?></b></label>
+								
+								<div class="form-row">
+									
+									
+									  <div class="col-md-12">
+                    <div class="position-relative form-group">
+							<input name="OrcDestino" id="OrcDestino" type="text" class="form-control" value="<?php echo $SoliDescempresa ; ?>" readonly>
+					</div>
+									</div>
+									
+	                <div class="col-md-12">
+                    <div class="position-relative form-group">
+							<input name="OrcTitulo" id="OrcTitulo" type="text" class="form-control" placeholder="Orçamento de?" >
+					</div>
+									</div>
+								
+								
+								
+								
+								
+								
+								
+								</div>
 								 
 							</div>
 						</div>
