@@ -43,6 +43,14 @@ $INSCRESTADUAL   = $ROW["INSCRESTADUAL"];
 $CNPJ            = $ROW["CNPJ"];
 $FAX             = $ROW["FAX"];
 $COMPLEMENTO     = $ROW["COMPLEMENTO"];
+$USR_TELEFONE 	 = $ROW["USR_TELEFONE"];
+$USR_CARGO 		 = $ROW["USR_CARGO"];
+$USR_EMAIL 		 = $ROW["USR_EMAIL"];
+$USR_CIDADE 	 = $ROW["USR_CIDADE"];
+$USR_ESTADO		 = $ROW["USR_ESTADO"];
+$USR_CEP		 = $ROW["USR_CEP"];
+	
+	
 	
 // PARAMETROS 
 $gerenciausuarios     = $ROW["gerenciausuarios"];

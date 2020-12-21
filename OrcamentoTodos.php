@@ -234,6 +234,7 @@ $OSDescricao		        = $SolicitacoesROW["OSDescricao"];
 
                                                 <tr>
                                                     <th class="text-center">#</th>
+													 <th class="text-center">Criado por</th>
                                                     <th>Descricao</th>
                                                     <th class="text-center">Loja</th>
                                                     <th class="text-center">Status</th>
@@ -257,6 +258,7 @@ $OrcTitulo		    = $SolicitacoesROW["OrcTitulo"];							$OrcDestino		        = $S
 
                                                 <tr>
                                                     <td class="text-center text-muted">#<?php echo sprintf('%04d', $OrcId);?> </td>
+													<td class="text-center"><?php echo $OrcQuemCriou; ?></td>
                                                     <td>
                                                         <div class="widget-content p-0">
                                                             <div class="widget-content-wrapper">

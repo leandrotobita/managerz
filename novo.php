@@ -254,13 +254,13 @@ ORDER BY SoliTipoDescricao ASC ";
 															<div class="col-md-6">
 																<div class="position-relative form-group">
 																	<label for="Nome">Nome</label>
-																	<input name="SolicitanteNome" id="SolicitanteNome" placeholder="Nome do solicitante" type="text" class="form-control">
+																	<input name="SolicitanteNome" id="SolicitanteNome" value="<?php echo $NOMECOMPLETO; ?>" type="text" class="form-control">
 																</div>
 															</div>
 															<div class="col-md-6">
 																<div class="position-relative form-group">
 																	<label for="SolicitanteTelefone">Telefone <small>(ex: 17 9123-4567)</small></label>
-																	<input name="SolicitanteTelefone" id="SolicitanteTelefone" placeholder="Telefone" type="text" class="form-control">
+																	<input name="SolicitanteTelefone" id="SolicitanteTelefone" value="<?php echo $USR_TELEFONE; ?>" type="text" class="form-control">
 																</div>
 															</div>
 														</div>
@@ -268,13 +268,13 @@ ORDER BY SoliTipoDescricao ASC ";
 															<div class="col-md-6">
 																<div class="position-relative form-group">
 																	<label for="Nome">Cargo</label>
-																	<input name="SolicitanteCargo" id="SoicitanteCargo" placeholder="Cargo" type="text" class="form-control">
+																	<input name="SolicitanteCargo" id="SoicitanteCargo" value="<?php echo $USR_CARGO; ?>" type="text" class="form-control">
 																</div>
 															</div>
 															<div class="col-md-6">
 																<div class="position-relative form-group">
 																	<label for="SolicitanteEmail">E-mail</label>
-																	<input name="SolicitanteEmail" id="SolicitanteEmail" placeholder="E-mail" type="email" class="form-control">
+																	<input name="SolicitanteEmail" id="SolicitanteEmail" value="<?php echo $USR_EMAIL; ?>" type="email" class="form-control">
 																</div>
 															</div>
 														</div>
@@ -282,7 +282,7 @@ ORDER BY SoliTipoDescricao ASC ";
 															<div class="col-md-6">
 																<div class="position-relative form-group">
 																	<label for="SolicitanteCidade">Cidade</label>
-																	<input name="SolicitanteCidade" id="SolicitanteCidade" type="text" class="form-control"  placeholder="Cidade" >
+																	<input name="SolicitanteCidade" id="SolicitanteCidade" type="text" class="form-control"  value="<?php echo $USR_CIDADE; ?>" >
 																</div>
 															</div>
 															<div class="col-md-4">
@@ -314,7 +314,7 @@ ORDER BY SoliTipoDescricao ASC ";
     <option value="RO">Rondônia</option>
     <option value="RR">Roraima</option>
     <option value="SC">Santa Catarina</option>
-    <option value="SP">São Paulo</option>
+    <option value="SP" selected>São Paulo</option>
     <option value="SE">Sergipe</option>
     <option value="TO">Tocantins</option>
     <option value="EX">Estrangeiro</option>
@@ -324,7 +324,7 @@ ORDER BY SoliTipoDescricao ASC ";
 															<div class="col-md-2">
 																<div class="position-relative form-group">
 																	<label for="SolicitanteCEP">CEP</label>
-																	<input name="SolicitanteCEP" id="SolicitanteCEP" type="text" class="form-control"  placeholder="Ex: 15105000" >
+																	<input name="SolicitanteCEP" id="SolicitanteCEP" type="text" class="form-control"  value="<?php echo $USR_CEP; ?>" >
 																</div>
 															</div>
 														</div>

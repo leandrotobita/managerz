@@ -132,7 +132,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
                                     <i class="pe-7s-help2 icon-gradient bg-mean-fruit"></i>
                                 </div>
                                 <div> Dashboard   
-                                    <div class="page-title-subheading">Solicitações abertas</div>
+                                    <div class="page-title-subheading">Todas as solicitações</div>
                                 </div>
                             </div>
                                 </div>

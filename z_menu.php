@@ -115,7 +115,7 @@ if ( mysqli_num_rows( $orcabertoRES ) > 0 ) {
 							
 							
 							<?php } ?>
-                            
+                            <?php if ($managerlevel2 == "profissional") {  ?>
                              <li class="app-sidebar__heading">ORÇAMENTOS</li>
                              
                              <li  >
@@ -129,6 +129,8 @@ if ( mysqli_num_rows( $orcabertoRES ) > 0 ) {
 											
                                         </a>
                                     </li>
+							
+							<?php } ?>
                            
                         </ul>
                     </div>
