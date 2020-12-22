@@ -19,9 +19,9 @@ if ( mysqli_num_rows( $abertoRES ) > 0 ) {
 // CONTADOR DE ORÇAMENTOS abertos
 
 if ($managerlevel2 == "profissional") { 
-$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado != 'Aprovado'";
+$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado  = 'Pendente'";
 } else {
-$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado != 'Aprovado'";		
+$orcabertoSQL = "SELECT count(OrcId) qtde_orcamentos FROM orcamento WHERE OrcAprovadoReprovado  = 'Pendente'";		
 }
 
 
