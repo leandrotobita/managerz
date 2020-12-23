@@ -1,7 +1,7 @@
 <?php
 
 
-$mensagem = "Lorem *ipsum dolor sit amet*, consectetur adipiscing elit. Integer suscipit erat quis tristique scelerisque. Vivamus posuere fermentum elit, eu interdum urna. Praesent tristique viverra iaculis. Integer vehicula augue at leo elementum, vitae suscipit eros ullamcorper. ";
+$mensagem = "🍏U0001F4A8Lorem *ipsum dolor sit amet*, consectetur adipiscing eli \\n\\n\\n\\n\\n\\n_Vivamus_ posuere fermentum elit, eu interdum urna. Praesent tristique viverra iaculis. Integer vehicula augue at leo elementum, vitae suscipit eros ullamcorper. ";
 
 $curl = curl_init();
 
@@ -13,12 +13,21 @@ curl_setopt_array($curl, array(
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"".$mensagem."\",\r\n  \"number\": \"17981251907\"\r\n}",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Teste de envio pela API\",\r\n  \"number\": \"17981251907\"\r\n}",
   CURLOPT_HTTPHEADER => array(
     "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
     "cache-control: no-cache"
   ),
+	CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Taaaaa\",\r\n  \"number\": \"17981251907\"\r\n}",
+  CURLOPT_HTTPHEADER => array(
+    "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
+    "cache-control: no-cache"
+  )
 ));
+{
+  
+}
+
 
 $response = curl_exec($curl);
 $err = curl_error($curl);

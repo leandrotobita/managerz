@@ -43,7 +43,7 @@ curl_setopt_array($curl, array(
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Julio, orçcamento#".$_GET['orc'].": *".$_GET["ia"]."*    https://manager.grupozani.com.br/Orcamento.php?orc=".$_GET['orc']." \",\r\n  \"number\": \"17991630492\"\r\n}",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"".$login_cookie.", orçcamento#".$_GET['orc'].": *".$_GET["ia"]."*    https://manager.grupozani.com.br/Orcamento.php?orc=".$_GET['orc']." \",\r\n  \"number\": \"17991630492\"\r\n}",
   CURLOPT_HTTPHEADER => array(
     "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
     "cache-control: no-cache"
@@ -123,7 +123,7 @@ curl_setopt_array($curl, array(
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => "POST",
-  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"Julio adicionou um novo ítem no orçamento #".$_POST['orc']." | ".$_POST['item']." Qtde: ".$_POST['itemqtde']." Valor: ".$_POST['itemvalor']."  https://manager.grupozani.com.br/Orcamento.php?orc=".$_POST['orc']." \",\r\n  \"number\": \"17991630492\"\r\n}",
+  CURLOPT_POSTFIELDS => "{\r\n  \"menssage\": \"".$login_cookie." adicionou um novo ítem no orçamento:\\n 🏷️".$_POST['orc']." | ".$_POST['item']." Qtde: ".$_POST['itemqtde']." Valor: ".$_POST['itemvalor']."  https://manager.grupozani.com.br/Orcamento.php?orc=".$_POST['orc']." \",\r\n  \"number\": \"17991630492\"\r\n}",
   CURLOPT_HTTPHEADER => array(
     "Authorization: 09t63pvr704gs0mcz6x5vliw6bj4cr",
     "cache-control: no-cache"
