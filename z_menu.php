@@ -120,11 +120,30 @@ if ( mysqli_num_rows( $orcabertoRES ) > 0 ) {
                              
                              <li  >
                                         <a href="OrcamentoTodos.php?p=orcamentos" <?php if ($_GET['p'] == 'orcamentos') { ?>class="mm-active"    <?php } else { ?>  <?php } ?>  >
-                                           <i class="metismenu-icon pe-7s-cash"></i>Orçamentos  
+                                           <i class="metismenu-icon pe-7s-cash"></i>Abertos  
 											
 											<?php if ( $orcaberto == '0') {  } else  { ?>
 											<b  class="badge badge-pill badge-danger" style="float: right;"> <?php echo $orcaberto; ?>   </b>
 											<?php } ?>
+											
+											
+                                        </a>
+                                    </li>
+							<li  >
+                                        <a href="OrcamentoAprovado.php?p=orcamentos3" <?php if ($_GET['p'] == 'orcamentos3') { ?>class="mm-active"    <?php } else { ?>  <?php } ?>  >
+                                           <i class="metismenu-icon pe-7s-cash"></i>Aprovados  
+											
+											 
+											
+											
+                                        </a>
+                                    </li>
+							
+							<li  >
+                                        <a href="OrcamentoNaoAprovado.php?p=orcamentos2" <?php if ($_GET['p'] == 'orcamentos2') { ?>class="mm-active"    <?php } else { ?>  <?php } ?>  >
+                                           <i class="metismenu-icon pe-7s-cash"></i>Não aprovados  
+											
+											 
 											
 											
                                         </a>

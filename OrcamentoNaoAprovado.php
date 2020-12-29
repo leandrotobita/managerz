@@ -66,7 +66,7 @@ SoliId, OrcTitulo, OrcDestino
 from orcamento
 
 LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli 
-where OrcAprovadoReprovado != 'Aprovado' and OrcAprovadoReprovado != 'Não aprovado'
+where OrcAprovadoReprovado = 'Não aprovado'
 
 order by OrcId desc
  
@@ -95,7 +95,7 @@ from orcamento
 LEFT JOIN gz_solicitacoes on gz_solicitacoes.SoliId = orcamento.OrcSoli
 
   
-WHERE  OrcAprovadoReprovado != 'Aprovado' and OrcSoli = '".$_GET[ 'sol' ]."' limit 1
+WHERE  OrcAprovadoReprovado = 'Não aprovado' and OrcSoli = '".$_GET[ 'sol' ]."' limit 1
 	";
 
 			?>
@@ -186,7 +186,7 @@ WHERE  OrcAprovadoReprovado != 'Aprovado' and OrcSoli = '".$_GET[ 'sol' ]."' lim
 											<div class="page-title-icon">
 												<i class="pe-7s-cash icon-gradient bg-mean-fruit"></i>
 											</div>
-											<div>Orçamentos em aberto
+											<div>Orçamentos não aprovados
 												
 								 <?php 
 					 
