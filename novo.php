@@ -142,7 +142,8 @@ ORDER BY SoliTipoDescricao ASC ";
 		<meta name="msapplication-tap-highlight" content="no">
 
 		<link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet">
-		
+		  <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
 		
 	</head>
 
@@ -221,7 +222,7 @@ ORDER BY SoliTipoDescricao ASC ";
 
 
 						<div class="row">
-							<form action="novoOK.php" method="post" enctype="multipart/form-data" name="form" id="form" title="form">
+							<form action="novoOK.php" method="post" enctype="multipart/form-data" name="insere_pedido" id="insere_pedido" autocomplete="on" title="insere_pedido">
 
 								<div class="col-md-12 col-lg-7">
 									<div class="main-card mb-3 card">
@@ -470,12 +471,12 @@ membros.forEach(function(membro){
 
 
 
-
+                                                                     
 
 															<div class="results-title">Clique em "Enviar solicitação" para terminar.</div>
 															<div class="mt-3 mb-3"></div>
 															<div class="text-center">
-																<button class="btn-shadow btn-wide btn btn-success btn-lg" type="submit" name="submit" id="submit">Enviar solicitação</button>
+																<button class="btn-shadow btn-wide btn btn-success btn-lg" type="submit" name="submit" id="submit" >Enviar solicitação</button>
 															</div>
 
 
@@ -516,7 +517,68 @@ membros.forEach(function(membro){
 		<?php include "z_direita.php";?>
 
 
+	<script src="plugins/sweetalert2/sweetalert2.min.js"></script>
 
+ <script>
+ 
+	 
+	
+	function baixa(id) { 
+						 Swal.fire({
+  title: 'Deseja inserir este pedido no sistema?',
+							 text: 'Verifique atentamente os dados antes de continuar.',
+   showCancelButton: true,
+  cancelButtonText: 'Voltar e Verificar',
+  confirmButtonText: `Inserir Pedido`,
+ }).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.isConfirmed) {
+	  
+	  
+    let timerInterval
+   Swal.fire({
+    title: 'Pedido inserido com sucesso.',
+	   icon:'success',
+    html: 'Continuando em <strong></strong> segundos.',
+	   timerProgressBar: true,
+    timer: 3000,
+    onOpen: () => {
+      swal.showLoading()
+      timerInterval = setInterval(() => {
+        swal.getContent().querySelector('strong')
+          .textContent = Math.ceil(swal.getTimerLeft() / 1000)
+      }, 100)
+    },
+    onClose: () => {
+      clearInterval(timerInterval)
+    }
+  }).then((result) => {
+    if (
+      // Read more about handling dismissals
+      result.dismiss === swal.DismissReason.timer
+    ) {
+      console.log('I was closed by the timer')
+    }
+  })
+	
+	  
+	
+	 
+	 
+	setTimeout(function(){   alert("a"); }, 3000);
+	  
+	  
+  } else if (result.isDenied) {
+    Swal.fire('Verifique os dados', '', 'info')
+  }
+							 
+							 
+}) 	 
+}
+	 
+	 
+	 
+</script>
 	</body>
 
 

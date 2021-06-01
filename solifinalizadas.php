@@ -56,6 +56,19 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 
 ?>
 
+<?php 
+
+		if ($_GET['baixa'] != '') { 
+
+		$excluirSoli = "DELETE FROM gz_solicitacoes WHERE SoliId = '".$_GET['baixa']."' ";
+mysqli_query( $connect, $excluirSoli );	
+		
+		?>   <script>window.location="solifinalizadas.php?p=finalizadas";</script><?php
+			
+			}
+		
+
+?>
   
 <!doctype html>
 <html lang="en">
@@ -194,6 +207,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 													<th class="text-center">Status </th>
 													
 													<th class="text-center">  </th>
+													<th class="text-center">  </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -277,6 +291,58 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 														
 														
 														    </td>
+													
+													
+													<Td> 
+													<td>
+														
+														
+														 
+													
+													  <button  name="del" value="<?php echo $row_lista_solicitacoes["SoliId"];?>" type="button" onclick="baixa('<?php echo $row_lista_solicitacoes["SoliId"];?>');" class="btn btn-danger btn-block"    >  <i class="fa fa-trash"></i> </button>
+														
+														<script>
+ 
+	 
+	
+	function baixa(id) { 
+						Swal.fire ({
+						  title: 'Deseja realmente excluir?: ' +id,
+						  text: "Deseja continuar? ",
+						  icon: 'warning',
+						  showCancelButton: true,
+						  confirmButtonColor: '#3085d6',
+						  cancelButtonColor: '#d33',
+						  confirmButtonText: 'Sim',
+						  cancelButtonText: 'Não'
+						}).then((result) => {
+  									if (result.isConfirmed) {
+	  
+											  
+	  
+								Swal.fire(
+								  'Excluído!',
+								  ' .',
+								  'success'
+
+								),  
+									
+								  window.location.href ='solifinalizadas.php?baixa=' +id;
+							  }   
+							})	 	 
+}
+	 
+	 
+ 
+
+	 
+	 
+</script>
+				
+													
+													</td></Td>
+													
+													
 												</TR>
 												<?php }}?>
 												
