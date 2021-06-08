@@ -933,7 +933,7 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 											
 											
 
-												<?php if ($managerlevel2 =='profissional') { ?>
+												<?php if ($managerlevel2 =='loja') { ?>
 												<div class="d-inline-block dropdown">
 													<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
                                                 <span class="btn-icon-wrapper pr-2 opacity-7">
