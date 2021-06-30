@@ -189,7 +189,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
                                                     <th class="text-center">Cidade</th>
                                                     <th class="text-center">Descrição</th>
                                                      
-													
+													  <th class="text-center">Previsão Término</th>
 													<th class="text-center">Status </th>
 													
 													<th class="text-center">  </th>
@@ -222,7 +222,8 @@ TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
 UsuarioLogado,
 IpUsuario,
 Status as SoliStatus,	
-AprovadoReprovado
+AprovadoReprovado,
+DATE_FORMAT(PrevisaoTermino, '%d/%m/%Y') AS PrevisaoTermino
  FROM gz_solicitacoes
 
 LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
@@ -246,7 +247,7 @@ LEFT JOIN gz_empresas on gz_empresas.GZ_EMPRESA_ID = gz_solicitacoes.SoliEmpresa
 												<td> <?php echo $row_lista_solicitacoes["Solicidade"];?> </td>
 											 
 												<td> <?php echo $row_lista_solicitacoes["OSDescricao"];?> </td>
-												
+												<td align="center"> <?php echo $row_lista_solicitacoes["PrevisaoTermino"];?> </td>
 												<td> 
 													
 														 

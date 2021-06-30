@@ -19,6 +19,57 @@ if ( isset( $login_cookie ) ) {
 
 
 	?>
+	<?php if ($_POST['previsaotermino'] != '') { ?>
+								
+								<script>alert("Previsão de Término OK");</script>
+
+
+					<?php
+$AdicionaPrevisaoTermino = "UPDATE gz_solicitacoes SET PrevisaoTermino = '".date( "Y-m-d", strtotime( $_POST['previsaotermino'] ) )."' WHERE SoliId = '".$_GET['sol']."'";
+mysqli_query( $connect, $AdicionaPrevisaoTermino );
+												
+												
+												
+												$AdicionaPrevisaoTerminoHistorico = "
+	
+	INSERT INTO gz_historico
+	(
+	historico_tarefa,
+	historico_solicitacao,
+	historico_descricao,
+	historico_datainserida,
+	historico_login
+	)
+	VALUES
+
+(
+	'',
+	'" . $_GET['sol']. "',
+	'" . 'Adicionou Previsão de Término: <b>' . $_POST[ 'previsaotermino' ] . '</b> .' . "',
+	NOW(),
+'" . $login_cookie . "'
+)
+	
+	
+	";
+												
+		mysqli_query( $connect, $AdicionaPrevisaoTerminoHistorico );
+										
+												
+												
+                    ?>
+
+
+
+
+								
+                   <script>window.location="SolicitacaoDetalhe.php?sol=<?php echo $_GET['sol']?>";</script>
+
+								<?php } ?>
+
+
+
+
 
 
 <?php
@@ -642,7 +693,8 @@ TIME_FORMAT(DataCadastro,'%H:%m:%s') as HORACADASATRO,
 UsuarioLogado,
 IpUsuario,
 `Status`  ,
-AprovadoReprovado
+AprovadoReprovado,
+DATE_FORMAT(PrevisaoTermino, '%d/%m/%Y') as PrevisaoTermino
  FROM gz_solicitacoes
 
 LEFT JOIN solicategoria on solicategoria.SoliCatId = gz_solicitacoes.OSCategoria
@@ -861,8 +913,8 @@ $HoraCadastro  = $SolicitacoesROW["HORACADASATRO"];
 $UsuarioLogado = $SolicitacoesROW["UsuarioLogado"];
 $IpUsuario     = $SolicitacoesROW["IpUsuario"];
 $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];			
-			$AprovadoReprovado2 = $SolicitacoesROW["AprovadoReprovado"];	
-
+$AprovadoReprovado2 = $SolicitacoesROW["AprovadoReprovado"];	
+$PrevisaoTermino = $SolicitacoesROW["PrevisaoTermino"];	
 					 
 					 ?>
 
@@ -884,7 +936,14 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 												<div class="page-title-subheading">Categoria:
 													<?php echo $Categoria; ?><br>Tipo:
 													<?php echo $OSTipo; ?>
-													 
+													
+													
+													
+											 
+													
+													
+													
+													
 												</div>
 											</div>
 
@@ -933,7 +992,7 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 											
 											
 
-												<?php if ($managerlevel2 =='loja') { ?>
+											
 												<div class="d-inline-block dropdown">
 													<button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
                                                 <span class="btn-icon-wrapper pr-2 opacity-7">
@@ -983,6 +1042,8 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 															
 
 															</li>
+															
+																<?php if ($managerlevel2 =='loja' or $login_cookie == "manageradmin") { ?>
 															<li class="nav-item">
 																<a class="nav-link" data-toggle="modal" data-target=".bd-example-modal-sm">
                                                             <i class="nav-link-icon lnr-checkmark-circle"></i>
@@ -994,10 +1055,11 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 
 
 															</li>
+															  <?php } ?>
 														</ul>
 													</div>
 												</div>
-												<?php } ?>
+												 
 											
 											 
 
@@ -1005,7 +1067,7 @@ $SoliDescempresa = $SolicitacoesROW["SoliDescempresa"];
 
 
 											</form>
-											<script>
+										  <script>
 												document.getElementById( "file" ).onchange = function () {
 													document.getElementById( "formfoto" ).submit();
 												};
@@ -1075,7 +1137,39 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 							
 							</div>
 							
+							<div class="alert bg-alternate text-white fade show" role="alert">
 							
+							Previsão para execução:<b> <?php echo $PrevisaoTermino;?></b>
+								
+								
+								<?php if ($login_cookie == "julio") { ?>
+								<form action="SolicitacaoDetalhe.php?sol=<?php echo $_GET['sol']?>" method="post" enctype="multipart/form-data" id="formx" title="formx">
+									
+								  <div class="input-group">
+                                    <div class="input-group-prepend datepicker-trigger">
+                                                        <div class="input-group-text">
+                                                            <i class="fa fa-calendar-alt"></i>
+                                                        </div>
+                                                  </div>
+                                                  <input name="previsaotermino" type="text" class="form-control" id="previsaotermino" title="previsaotermino" data-toggle="datepicker-icon"/>
+									  
+									  <div class="input-group-prepend datepicker-trigger">
+                                                        <div class="input-group-text bg-success text-white" onclick="document.getElementById('formx').submit()" style="cursor:pointer;">
+                                                          <i class="fa fa-save"></i>
+                                                        </div>
+                                                  </div>
+									  
+									  
+                                              </div>
+									  
+									
+							 
+								</form>
+								<?php } ?>
+  					
+								
+							
+							</div>
 							
 								<div class="row">
 
@@ -1115,7 +1209,7 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 																<?php echo $SoliNome; ; ?>/
 																<?php echo $SoliCargo ; ?>
 															</b>
-															<Br>em <b class="text-primary"><?php echo date('d/m/Y', strtotime($DataCadastro));?> </b> às <b class="text-primary"><?php echo date('H:m:s', strtotime($DataCadastro));?></b><br>
+															<Br>em <b class="text-primary"><?php echo $DataCadastro; ?>  </b> às <b class="text-primary"><?php echo $HoraCadastro;?></b><br>
 
 															<i class="ion-android-call"></i>
 															<?php echo $SoliTelefone ; ?> <br>
@@ -1123,31 +1217,26 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 															<?php echo $SoliEmail ; ?> <br>
 															<i class="lnr-apartment"></i>
 															<?php echo $Solicidade ; ?>/
-															<?php echo $SoliEstado ; ?> <br> Vence em:
-															<b class="text-primary">
-																<?php echo date('d/m/Y', strtotime($OSVencimento));?> </b>
-
-
-
+															<?php echo $SoliEstado ; ?> <br> 
+																
+																 
 
 
 														</div>
-														<div class="sub-label-right">
-
-
-
-												</div>
+														 
 															
-											</div>
+															
+															
+											</div> 
 
- 
+
 														
 														
 														
 														
 													<div>
 
-														</div>
+												  </div>
 
 
 												 
@@ -1159,9 +1248,19 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 									</div>
 
 
+												
+												
+												
+												
 								</div>
 											
-										</div></div>
+								  </div>
+									
+									
+									
+									
+									
+							  </div>
 									
 									<div class="row">
 										 <div class="col-md-12">
@@ -1324,7 +1423,7 @@ if (mysqli_num_rows($QTDE_VENDAS_ULTIMOANO_RES) > 0) { while ($QTDE_VENDAS_ULTIM
 	
 	<a href="SolicitacaoDetalhe.php?sol=<?php echo $TarefaSolicitacao[$index]; ?>&i=<?php echo $TarefaId[$index]; ?>&f=<?php echo $TarefaTitulo[$index]; ?>&z=02 - feito">
 																		<button type="button" tabindex="0" class="dropdown-item"  >Finalizar</button>
-																			</a>
+																	  </a>
 	
 	 
 	
